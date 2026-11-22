@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { X } from 'lucide-react'
+import { CalendarDays, X } from 'lucide-react'
 
 const CATEGORIES = ['Design', 'Development', 'Content']
 const STATUSES = ['To do', 'In progress', 'Completed']
@@ -75,20 +75,23 @@ export default function TaskModal({ task = null, onClose, onSave }) {
   }
 
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
+    <div className="modal-backdrop task-modal-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
       <section ref={dialogRef} className="task-modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
         <header className="modal-header">
-          <div><p>TASK DETAILS</p><h2 id="task-modal-title">{task ? 'Edit task' : 'Create a task'}</h2></div>
+          <div>
+            <h2 id="task-modal-title">{task ? 'Edit task' : 'Create new task'}</h2>
+            <p>Add your task details to stay on top of your work.</p>
+          </div>
           <button type="button" className="modal-close" aria-label="Close task form" onClick={onClose}><X size={19} /></button>
         </header>
         <form onSubmit={submit} noValidate>
-          <label className="form-label" htmlFor="task-title">Title <span>*</span></label>
+          <label className="form-label" htmlFor="task-title">Task title <span>*</span></label>
           <input
             ref={titleRef}
             id="task-title"
             value={values.title}
             onChange={event => updateField('title', event.target.value)}
-            placeholder="What needs to be done?"
+            placeholder="e.g. Update pricing page"
             aria-required="true"
             aria-invalid={Boolean(error)}
             aria-describedby={error ? 'task-title-error' : undefined}
@@ -98,20 +101,22 @@ export default function TaskModal({ task = null, onClose, onSave }) {
           <label className="form-label" htmlFor="task-description">Description</label>
           <textarea
             id="task-description"
-            rows={3}
+            rows={2}
             value={values.description}
             onChange={event => updateField('description', event.target.value)}
-            placeholder="Add a few details..."
+            placeholder="Add notes about this task..."
           />
 
           <div className="modal-field-grid">
-            <div>
-              <label className="form-label" htmlFor="task-category">Category</label>
-              <select id="task-category" value={values.category || 'Design'} onChange={event => updateField('category', event.target.value)}>
-                {values.category && !CATEGORIES.includes(values.category) && <option value={values.category}>{values.category}</option>}
-                {CATEGORIES.map(category => <option value={category} key={category}>{category}</option>)}
-              </select>
-            </div>
+            {task && (
+              <div className="category-field">
+                <label className="form-label" htmlFor="task-category">Category</label>
+                <select id="task-category" value={values.category || 'Design'} onChange={event => updateField('category', event.target.value)}>
+                  {values.category && !CATEGORIES.includes(values.category) && <option value={values.category}>{values.category}</option>}
+                  {CATEGORIES.map(category => <option value={category} key={category}>{category}</option>)}
+                </select>
+              </div>
+            )}
             <div>
               <label className="form-label" htmlFor="task-status">Status</label>
               <select id="task-status" value={values.status} onChange={event => updateField('status', event.target.value)}>
@@ -124,11 +129,13 @@ export default function TaskModal({ task = null, onClose, onSave }) {
                 {PRIORITIES.map(priority => <option value={priority} key={priority}>{priority}</option>)}
               </select>
             </div>
-            <div>
-              <label className="form-label" htmlFor="task-due-date">Due date</label>
-              <input id="task-due-date" type="date" value={values.dueDate || ''} onChange={event => updateField('dueDate', event.target.value)} />
-            </div>
           </div>
+          <label className="form-label" htmlFor="task-due-date">Due date</label>
+          <div className="task-date-field">
+            <CalendarDays size={16} aria-hidden="true" />
+            <input id="task-due-date" lang="en-GB" type="date" value={values.dueDate || ''} onChange={event => updateField('dueDate', event.target.value)} />
+          </div>
+          <small className="required-note">* Required field</small>
           <footer className="modal-actions">
             <button type="button" className="secondary-button" onClick={onClose}>Cancel</button>
             <button type="submit" className="primary-button">{task ? 'Save changes' : 'Create task'}</button>

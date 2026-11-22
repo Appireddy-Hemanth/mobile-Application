@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter, useLocation, useNavigate } from 'react-router-dom'
-import { CalendarDays, CheckSquare, LayoutDashboard, Settings } from 'lucide-react'
+import { CalendarDays, CheckSquare, ChevronDown, LayoutDashboard, Settings } from 'lucide-react'
 import { TaskProvider } from './context/TaskContext.jsx'
 import { useTaskContext } from './context/useTaskContext'
 import Dashboard from './pages/Dashboard'
@@ -18,7 +18,7 @@ const navigation = [
 function Brand() {
   return (
     <span className="brand-lockup">
-      <span className="brand-symbol" aria-hidden="true"><i /><i /><i /></span>
+      <span className="brand-symbol" aria-hidden="true"><i /><i /><i /><i /></span>
       <span>FocusBoard</span>
     </span>
   )
@@ -58,15 +58,14 @@ function AppFrame({ children }) {
         <nav className="desktop-nav" aria-label="Primary navigation">
           {navigation.map(navButton)}
         </nav>
-        <div className="sidebar-profile">
-          <span className="avatar">JD</span>
-          <span><strong>Jordan Davis</strong><small>Personal workspace</small></span>
-        </div>
       </aside>
       <div className="workspace">
         <header className="topbar">
           <p><span>Workspace</span><b>/</b>{activePath === '/tasks' ? 'My tasks' : activePath === '/calendar' ? 'Calendar' : activePath === '/settings' ? 'Settings' : 'Overview'}</p>
-          <span className="avatar" aria-label="Jordan Davis">JD</span>
+          <div className="topbar-profile">
+            <span className="avatar" aria-label="Jordan Davis">JD</span>
+            <ChevronDown size={14} aria-hidden="true" />
+          </div>
         </header>
         <div className="mobile-header">
           <Brand />

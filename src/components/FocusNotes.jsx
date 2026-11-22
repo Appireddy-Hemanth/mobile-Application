@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { focusNotes } from '../data/focusNotes'
 
-export default function FocusNotes({ tasks = [], pendingCount = 0, completionPercentage = 0 }) {
+export default function FocusNotes({ pendingCount = 0, completionPercentage = 0 }) {
   const [slide, setSlide] = useState(0)
-  const nextTask = tasks.find(task => task.status !== 'Completed')
+  const note = focusNotes[slide]
   const changeSlide = direction => setSlide(current => (current + direction + focusNotes.length) % focusNotes.length)
 
   return (
@@ -26,8 +26,8 @@ export default function FocusNotes({ tasks = [], pendingCount = 0, completionPer
       <div className="focus-banner-content" aria-live="polite">
         <div className="focus-meta"><span>FOCUS NOTES</span><b>{String(slide + 1).padStart(2, '0')} / {String(focusNotes.length).padStart(2, '0')}</b></div>
         <p className="mobile-greeting">GOOD AFTERNOON</p>
-        <h2>{focusNotes[slide].title}</h2>
-        <p className="focus-subtitle">{focusNotes[slide].detail}</p>
+        <h2>{note.title}</h2>
+        <p className="focus-subtitle">{note.detail}</p>
         <div className="mobile-focus-progress">
           <div className="mobile-progress-copy">
             <span>{pendingCount} {pendingCount === 1 ? 'task' : 'tasks'} waiting for your attention</span>
@@ -39,10 +39,10 @@ export default function FocusNotes({ tasks = [], pendingCount = 0, completionPer
       <div className="focus-preview" aria-label="Next task preview">
         <div className="preview-heading">
           <span className="preview-status"><Check size={12} aria-hidden="true" /></span>
-          <span>NEXT UP</span>
+          <span>{note.previewStatus}</span>
         </div>
-        <strong>{nextTask?.title || 'Take a well-earned break'}</strong>
-        <div className="preview-progress"><span><i style={{ width: `${nextTask ? 62 : 100}%` }} /></span><b>{nextTask ? '62%' : '100%'}</b></div>
+        <strong>{note.previewTask}</strong>
+        <div className="preview-progress"><span><i style={{ width: note.previewProgress }} /></span><b>{note.previewProgress}</b></div>
       </div>
       <div className="focus-banner-bottom">
         <div className="focus-indicators" aria-label={`Slide ${slide + 1} of ${focusNotes.length}`}>
@@ -62,8 +62,6 @@ export default function FocusNotes({ tasks = [], pendingCount = 0, completionPer
           <button type="button" aria-label="Next slide" onClick={() => changeSlide(1)}><ArrowRight size={16} /></button>
         </div>
       </div>
-      <span className="focus-decoration focus-decoration-one" aria-hidden="true" />
-      <span className="focus-decoration focus-decoration-two" aria-hidden="true"><Check size={16} /></span>
     </section>
   )
 }

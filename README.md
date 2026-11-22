@@ -8,7 +8,7 @@ A responsive, single-user task dashboard for planning work, tracking progress, a
 ## Features
 
 - Six realistic sample tasks, loaded only when no saved task list exists
-- Create and edit tasks with title validation, description, category, status, priority, and optional due date
+- Create tasks with title validation, description, status, priority, and optional due date; new tasks default to **Design**, and existing task categories can be changed while editing
 - Delete tasks after confirmation
 - Cycle task status from **To do** to **In progress** to **Completed**
 - Combine case-insensitive title search, status tabs, and priority filtering
@@ -28,7 +28,7 @@ The interface adapts across the requested reference widths:
 | **768px tablet** | Compact icon sidebar, fluid dashboard cards and filters |
 | **390px mobile** | Compact top header, two-column statistics, stacked task cards, fixed bottom navigation |
 
-The Create/Edit Task dialog also adapts to narrow viewports without horizontal scrolling.
+The Create/Edit Task dialog follows the supplied Figma field layout and adapts to narrow viewports without horizontal scrolling.
 The desktop Focus Notes banner follows the Figma reference frame size of **1106 × 152 px**; screenshots are captured at the supplied **1440 × 1000 px** desktop and **390 × 1128 px** mobile reference sizes.
 
 ## Tech stack

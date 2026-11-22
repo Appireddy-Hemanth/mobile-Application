@@ -1,10 +1,10 @@
 import { useMemo, useRef } from 'react'
-import { ArrowUpRight, CheckCircle2, CircleDashed, ListTodo, Plus, Search, Sparkles } from 'lucide-react'
+import { CheckCircle2, CircleDashed, ListTodo, Plus, Search, Sparkles } from 'lucide-react'
 import { useTaskContext } from '../context/useTaskContext'
 import FocusNotesCarousel from '../components/FocusNotesCarousel'
 import TaskList from '../components/TaskList'
 
-const TABS = ['All', 'To do', 'In progress', 'Completed']
+const TABS = ['All', 'In progress', 'Completed']
 
 export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
   const tabRefs = useRef([])
@@ -30,7 +30,6 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
       .filter(task => !query || task.title.toLocaleLowerCase().includes(query))
       .filter(task => statusFilter === 'All' || task.status === statusFilter)
       .filter(task => priorityFilter === 'All' || task.priority === priorityFilter)
-      .sort((a, b) => (a.dueDate || '9999-12-31').localeCompare(b.dueDate || '9999-12-31'))
   }, [tasks, searchQuery, statusFilter, priorityFilter])
 
   const resetFilters = () => {
@@ -62,24 +61,31 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
     <main className="dashboard" id="main-content">
       <section className="hero">
         <div>
-          <p className="eyebrow">OVERVIEW</p>
-          <h1>Your work, in focus.</h1>
-          <p className="hero-subtitle">Plan your day, stay organized, and celebrate small wins.</p>
+          <h1>
+            <span className="desktop-title">Your work, in focus.</span>
+            <span className="mobile-title">Your work<br />in focus.</span>
+          </h1>
+          <p className="hero-subtitle">
+            <span className="desktop-subtitle">Plan your day, stay organized, and celebrate small wins.</span>
+            <span className="mobile-subtitle">Stay organized and keep moving forward.</span>
+          </p>
         </div>
         <button type="button" className="primary-button new-task-button" onClick={onAddTask} aria-label="New task">
           <Plus size={18} aria-hidden="true" /><span>New task</span>
         </button>
       </section>
 
-      <FocusNotesCarousel tasks={tasks} pendingCount={pendingCount} completionPercentage={completionPercentage} />
+      <FocusNotesCarousel pendingCount={pendingCount} completionPercentage={completionPercentage} />
 
+      <h2 className="stats-heading">Overview</h2>
       <section className="stats-grid" aria-label="Task overview">
         {stats.map(({ title, count, supporting, icon: Icon, tone }) => (
           <article className={`stat-card ${tone}`} key={title}>
-            <div className="stat-top"><span className="stat-icon"><Icon size={19} aria-hidden="true" /></span><ArrowUpRight size={16} className="stat-arrow" aria-hidden="true" /></div>
-            <p>{title}</p>
-            <strong>{count}</strong>
-            <small>{supporting}</small>
+            <div className="stat-top">
+              <span className="stat-icon"><Icon size={19} aria-hidden="true" /></span>
+              <p>{title}</p>
+            </div>
+            <div className="stat-value-row"><strong>{count}</strong><small>{supporting}</small></div>
           </article>
         ))}
       </section>
@@ -87,11 +93,16 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
       <section className="tasks-section" id="tasks" aria-labelledby="tasks-title">
         <header className="tasks-section-heading">
           <div>
-            <p className="eyebrow">YOUR WORKSPACE</p>
             <h2 id="tasks-title" tabIndex={-1}>My tasks</h2>
-            <p>Manage and track everything in one place.</p>
+            <p>
+              <span className="desktop-subtitle">Manage and track everything in one place.</span>
+              <span className="mobile-subtitle">Your priorities for this week</span>
+            </p>
           </div>
-          <button type="button" className="text-button" onClick={resetFilters}>View all tasks <ArrowUpRight size={15} /></button>
+          <button type="button" className="text-button" onClick={resetFilters}>View all tasks</button>
+          <button type="button" className="primary-button mobile-new-task-button" onClick={onAddTask} aria-label="New task">
+            <Plus size={19} aria-hidden="true" />
+          </button>
         </header>
 
         <div className="task-toolbar">
@@ -114,7 +125,9 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
                   onClick={() => setStatusFilter(tab)}
                   onKeyDown={event => handleTabKeyDown(event, TABS.indexOf(tab))}
                 >
-                  {tab}<span>{count}</span>
+                  <span className="desktop-tab-label">{tab === 'All' ? 'All tasks' : tab}</span>
+                  <span className="mobile-tab-label">{tab === 'All' ? 'All' : tab}</span>
+                  <span>{count}</span>
                 </button>
               )
             })}

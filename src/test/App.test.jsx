@@ -25,11 +25,11 @@ describe('FocusBoard dashboard', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'New task' }))
+    await user.click(screen.getAllByRole('button', { name: 'New task' })[0])
     await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Please enter a task title.')
 
-    await user.type(screen.getByLabelText('Title *'), 'Audit test coverage')
+    await user.type(screen.getByLabelText('Task title *'), 'Audit test coverage')
     await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
     expect(await screen.findByText('Audit test coverage')).toBeInTheDocument()
     await waitFor(() => {
@@ -52,13 +52,15 @@ describe('FocusBoard dashboard', () => {
     expect(actions).toHaveFocus()
     await user.click(actions)
     await user.click(within(row).getByRole('button', { name: 'Edit task' }))
-    const title = screen.getByLabelText('Title *')
+    const title = screen.getByLabelText('Task title *')
     await user.clear(title)
     await user.type(title, 'Landing page refresh')
+    await user.selectOptions(screen.getByLabelText('Category'), 'Development')
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
     expect(await within(document.querySelector('.task-list')).findByText('Landing page refresh')).toBeInTheDocument()
 
     const editedRow = within(document.querySelector('.task-list')).getByText('Landing page refresh').closest('article')
+    expect(within(editedRow).getByText('Development')).toBeInTheDocument()
     await user.click(within(editedRow).getByRole('button', { name: 'Actions for Landing page refresh' }))
     await user.click(within(editedRow).getByRole('button', { name: 'Delete task' }))
     expect(screen.getByRole('alertdialog')).toBeInTheDocument()
@@ -70,25 +72,25 @@ describe('FocusBoard dashboard', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.type(screen.getByRole('searchbox', { name: 'Find a task' }), 'FIX MOBILE')
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Filter by priority' }), 'High')
-    await user.click(screen.getByRole('tab', { name: /To do/ }))
+    await user.type(screen.getByRole('searchbox', { name: 'Find a task' }), 'POLISH TASK')
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Filter by priority' }), 'Medium')
+    await user.click(screen.getByRole('tab', { name: /In progress/ }))
 
-    expect(screen.getByText('Fix mobile navigation')).toBeInTheDocument()
+    expect(screen.getByText('Polish task cards')).toBeInTheDocument()
     expect(within(document.querySelector('.task-list')).queryByText('Design landing page')).not.toBeInTheDocument()
   })
 
   it('cycles task status and updates calculated statistics', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const task = screen.getByText('Review onboarding copy').closest('article')
+    const task = screen.getByText('Fix mobile navigation').closest('article')
     await user.click(within(task).getByRole('button', { name: /Current status To do/ }))
     expect(within(task).getByText('In progress')).toBeInTheDocument()
     await user.click(within(task).getByRole('button', { name: /Current status In progress/ }))
     expect(within(task).getByRole('button', { name: /Current status Completed/ })).toBeInTheDocument()
     await waitFor(() => {
       expect(JSON.parse(window.localStorage.getItem('focusboard_tasks'))).toEqual(
-        expect.arrayContaining([expect.objectContaining({ id: 'review-onboarding-copy', status: 'Completed' })]),
+        expect.arrayContaining([expect.objectContaining({ id: 'fix-mobile-navigation', status: 'Completed' })]),
       )
     })
 
@@ -102,14 +104,17 @@ describe('FocusBoard dashboard', () => {
 
     const carousel = screen.getByRole('region', { name: 'Focus Notes carousel' })
     expect(within(carousel).getByRole('heading', { name: 'Make today count.' })).toBeInTheDocument()
-    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('2 tasks waiting for your attention')
+    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('3 tasks waiting for your attention')
     expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('33% complete')
     expect(carousel.querySelector('.progress-track > span')).toHaveStyle({ width: '33%' })
     carousel.focus()
     await user.keyboard('{ArrowRight}')
     expect(within(carousel).getByRole('heading', { name: 'Small steps, big progress.' })).toBeInTheDocument()
+    expect(within(carousel).getByText('Fix navigation')).toBeInTheDocument()
+    expect(within(carousel).getByText('67%')).toBeInTheDocument()
     await user.click(within(carousel).getByRole('button', { name: 'Next slide' }))
     expect(within(carousel).getByRole('heading', { name: 'Celebrate the wins.' })).toBeInTheDocument()
+    expect(within(carousel).getByText('Onboarding copy')).toBeInTheDocument()
   })
 
   it('moves between status tabs using arrow keys', async () => {
@@ -118,7 +123,7 @@ describe('FocusBoard dashboard', () => {
     const allTab = screen.getByRole('tab', { name: /All/ })
     allTab.focus()
     await user.keyboard('{ArrowRight}')
-    expect(screen.getByRole('tab', { name: /To do/ })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: /In progress/ })).toHaveAttribute('aria-selected', 'true')
     await user.keyboard('{End}')
     expect(screen.getByRole('tab', { name: /Completed/ })).toHaveFocus()
   })
@@ -126,7 +131,7 @@ describe('FocusBoard dashboard', () => {
   it('opens the modal with Escape and exposes Calendar and Settings placeholders', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByRole('button', { name: 'New task' }))
+    await user.click(screen.getAllByRole('button', { name: 'New task' })[0])
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
