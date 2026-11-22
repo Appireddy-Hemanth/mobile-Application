@@ -42,7 +42,10 @@ export default function FocusNotes({ pendingCount = 0, completionPercentage = 0 
           <span>{note.previewStatus}</span>
         </div>
         <strong>{note.previewTask}</strong>
-        <div className="preview-progress"><span><i style={{ width: note.previewProgress }} /></span><b>{note.previewProgress}</b></div>
+        <div className="preview-progress">
+          <span><i style={{ width: `${completionPercentage}%` }} /></span>
+          <b aria-live="polite" aria-atomic="true">{completionPercentage}%</b>
+        </div>
       </div>
       <div className="focus-banner-bottom">
         <div className="focus-indicators" aria-label={`Slide ${slide + 1} of ${focusNotes.length}`}>

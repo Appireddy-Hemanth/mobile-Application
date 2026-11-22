@@ -95,9 +95,15 @@ describe('FocusBoard dashboard', () => {
 
     const overview = screen.getByRole('region', { name: 'Task overview' })
     expect(within(overview).getByText('3')).toBeInTheDocument()
+    const carousel = screen.getByRole('region', { name: 'Focus Notes carousel' })
+    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('50% complete')
+    expect(carousel.querySelector('.preview-progress > span > i')).toHaveStyle({ width: '50%' })
+    expect(carousel.querySelector('.preview-progress b')).toHaveTextContent('50%')
 
     await user.click(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as incomplete' }))
     expect(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as completed' })).not.toHaveClass('is-completed')
+    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('33% complete')
+    expect(carousel.querySelector('.preview-progress b')).toHaveTextContent('33%')
   })
 
   it('supports all three focus-note slides and arrow-key navigation', async () => {
@@ -113,7 +119,7 @@ describe('FocusBoard dashboard', () => {
     await user.keyboard('{ArrowRight}')
     expect(within(carousel).getByRole('heading', { name: 'Small steps, big progress.' })).toBeInTheDocument()
     expect(within(carousel).getByText('Fix navigation')).toBeInTheDocument()
-    expect(within(carousel).getByText('67%')).toBeInTheDocument()
+    expect(carousel.querySelector('.preview-progress b')).toHaveTextContent('33%')
     await user.click(within(carousel).getByRole('button', { name: 'Next slide' }))
     expect(within(carousel).getByRole('heading', { name: 'Celebrate the wins.' })).toBeInTheDocument()
     expect(within(carousel).getByText('Onboarding copy')).toBeInTheDocument()
