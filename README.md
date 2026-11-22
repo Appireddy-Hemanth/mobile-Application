@@ -1,18 +1,26 @@
 # FocusBoard
 
-FocusBoard is a responsive, single-user task management dashboard built for fast task planning and daily focus tracking. It supports task creation and editing, status changes, filtering, focus notes, and local browser persistence.
+FocusBoard is a responsive, frontend-only productivity dashboard for planning work, tracking habits, managing projects, and reviewing focus activity. It supports task creation and editing, status changes, filtering, focus notes, recurring tasks, and local browser persistence.
 
-## Live Demo
-No public hosted demo is claimed yet. The source and screenshots are available at:
+## Repository
 
-- https://github.com/Appireddy-Hemanth/FocusBoard
+- **GitHub:** https://github.com/Appireddy-Hemanth/mobile-Application
+
+No public hosted demo is claimed until the application is deployed successfully.
 
 ## Screenshots
 
-![Desktop dashboard](./screenshots/desktop.png)
-![Mobile dashboard](./screenshots/mobile.png)
+### Desktop
 
-Place locally captured desktop and mobile screenshots in `./screenshots/` using those filenames.
+![FocusBoard desktop dashboard](./screenshots/desktop.png)
+
+### Mobile
+
+![FocusBoard mobile dashboard](./screenshots/mobile.png)
+
+## Overview
+
+FocusBoard combines task management with lightweight productivity and well-being tools in one browser-based workspace. Data is stored locally, so no account or backend is required.
 
 ## Features
 
@@ -53,6 +61,7 @@ Place locally captured desktop and mobile screenshots in `./screenshots/` using 
 - JavaScript and JSDoc
 - CSS3 responsive layout and Lucide React icons
 - Browser `localStorage`
+- Vitest and Testing Library
 
 No external state management library or backend is required.
 

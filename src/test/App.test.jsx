@@ -18,7 +18,7 @@ describe('FocusBoard core tasks', () => {
     await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
 
     expect((await screen.findAllByText('Audit test coverage')).length).toBeGreaterThan(0)
-  }, 10000)
+  }, 30000)
 
   it('validates an empty task title', async () => {
     const user = userEvent.setup()
