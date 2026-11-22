@@ -33,11 +33,13 @@ It is designed to feel like a lightweight personal productivity suite:
 
 ## Screenshots
 
-### Desktop experience
+Captured from the live application at the assignment reference sizes.
+
+### Desktop experience — 1440 × 1000
 
 ![FocusBoard desktop dashboard](./screenshots/desktop.png)
 
-### Mobile experience
+### Mobile experience — 390 × 1128
 
 <div align="center">
   <img src="./screenshots/mobile.png" alt="FocusBoard mobile dashboard" width="390">
@@ -232,6 +234,8 @@ Vitest is configured for the jsdom environment with Testing Library and uses a s
 
 ## Production Deployment
 
+**Live application:** [https://focusboard-dashboard-tan.vercel.app/](https://focusboard-dashboard-tan.vercel.app/)
+
 Create a static production build:
 
 ```bash
@@ -241,8 +245,7 @@ npm run build
 Deploy the generated `dist/` directory to a static host.
 
 Because FocusBoard uses React Router paths, configure your host to rewrite application routes such as `/tasks` and `/kanban` to `index.html`.
-
-No live URL is included until a deployment has been verified.
+The Vercel rewrite is configured in [`vercel.json`](./vercel.json). The deployed homepage and direct application routes have been checked.
 
 ### Static host example
 
