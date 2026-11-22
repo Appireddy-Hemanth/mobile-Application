@@ -99,7 +99,7 @@ function AppFrame({ children }) {
 }
 
 function FocusBoardApp() {
-  const { dispatch, trashTask, tasks } = useTaskContext()
+  const { addTask, deleteTask, tasks, updateTask } = useTaskContext()
   const [formTask, setFormTask] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [toast, setToast] = useState('')
@@ -110,16 +110,13 @@ function FocusBoardApp() {
   const saveTask = values => {
     const today = new Date().toISOString().slice(0, 10)
     if (formTask?.id) {
-      dispatch({ type: 'UPDATE_TASK', payload: { id: formTask.id, changes: { ...values, updatedAt: today } } })
+      updateTask(formTask.id, { ...values, updatedAt: today })
     } else {
-      dispatch({
-        type: 'ADD_TASK',
-        payload: {
-          ...values,
-          id: globalThis.crypto?.randomUUID?.() || `task-${Date.now()}`,
-          createdAt: today,
-          updatedAt: today,
-        },
+      addTask({
+        ...values,
+        id: globalThis.crypto?.randomUUID?.() || `task-${Date.now()}`,
+        createdAt: today,
+        updatedAt: today,
       })
     }
     setFormTask(null)
@@ -154,7 +151,7 @@ function FocusBoardApp() {
           task={deleteTarget}
           onClose={() => setDeleteTarget(null)}
           onConfirm={() => {
-            trashTask(deleteTarget.id)
+            deleteTask(deleteTarget.id)
             setDeleteTarget(null)
             setToast('Task deleted')
             window.setTimeout(() => setToast(''), 2400)

@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { CheckCircle2, CircleDashed, ListTodo, Plus, Search, Sparkles } from 'lucide-react'
 import { useTaskContext } from '../context/useTaskContext'
-import FocusNotesCarousel from '../components/FocusNotesCarousel'
+import FocusNotes from '../components/FocusNotes'
 import TaskList from '../components/TaskList'
 
 const TABS = ['All', 'In progress', 'Completed']
@@ -10,7 +10,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
   const tabRefs = useRef([])
   const {
     tasks,
-    dispatch,
+    updateStatus,
     totalCount,
     inProgressCount,
     completedCount,
@@ -50,7 +50,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
     tabRefs.current[nextIndex]?.focus()
   }
 
-  const changeStatus = (id, status) => dispatch({ type: 'UPDATE_STATUS', payload: { id, status } })
+  const changeStatus = (id, status) => updateStatus(id, status)
   const stats = [
     { title: 'Total tasks', count: totalCount, supporting: 'Across all projects', icon: ListTodo, tone: 'purple' },
     { title: 'In progress', count: inProgressCount, supporting: 'Keep the momentum', icon: CircleDashed, tone: 'blue' },
@@ -75,7 +75,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
         </button>
       </section>
 
-      <FocusNotesCarousel pendingCount={pendingCount} completionPercentage={completionPercentage} />
+      <FocusNotes pendingCount={pendingCount} completionPercentage={completionPercentage} />
 
       <h2 className="stats-heading">Overview</h2>
       <section className="stats-grid" aria-label="Task overview">

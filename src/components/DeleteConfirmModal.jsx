@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 
-export default function DeleteConfirmModal({ task, onClose, onConfirm, permanent = false }) {
+export default function DeleteConfirmModal({ task, onClose, onConfirm }) {
   const dialogRef = useRef(null)
   const cancelRef = useRef(null)
   const previousFocusRef = useRef(null)
@@ -55,18 +55,14 @@ export default function DeleteConfirmModal({ task, onClose, onConfirm, permanent
         aria-describedby="delete-confirm-description"
       >
         <div className="confirm-icon" aria-hidden="true"><Trash2 size={20} /></div>
-        <h2 id="delete-confirm-title">{permanent ? 'Permanently delete?' : 'Move task to Recently Deleted?'}</h2>
-        <p id="delete-confirm-description">
-          {permanent
-            ? `“${task.title}” will be permanently removed and cannot be restored.`
-            : `“${task.title}” will be moved to Recently Deleted. You can restore it later.`}
-        </p>
+        <h2 id="delete-confirm-title">Delete task?</h2>
+        <p id="delete-confirm-description">“{task.title}” will be permanently deleted.</p>
         <footer className="modal-actions">
           <button ref={cancelRef} type="button" className="cancel-button" onClick={onClose}>
             Cancel
           </button>
           <button type="button" className="delete-button" onClick={onConfirm}>
-            {permanent ? 'Delete permanently' : 'Move to deleted'}
+            Delete task
           </button>
         </footer>
       </section>

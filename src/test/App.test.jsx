@@ -64,7 +64,7 @@ describe('FocusBoard dashboard', () => {
     await user.click(within(editedRow).getByRole('button', { name: 'Actions for Landing page refresh' }))
     await user.click(within(editedRow).getByRole('button', { name: 'Delete task' }))
     expect(screen.getByRole('alertdialog')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Move to deleted' }))
+    await user.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Delete task' }))
     await waitFor(() => expect(within(document.querySelector('.task-list')).queryByText('Landing page refresh')).not.toBeInTheDocument())
   })
 

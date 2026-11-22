@@ -73,7 +73,16 @@ export default function TaskCard({ task, onUpdateStatus, onEdit, onDelete }) {
           {menuOpen && (
             <div className="task-menu-items" id={`task-actions-${task.id}`} aria-label={`${task.title} actions`}>
               <button type="button" onClick={() => { setMenuOpen(false); onEdit(task) }}>Edit task</button>
-              <button type="button" className="menu-delete" onClick={() => onDelete(task)}>Delete task</button>
+              <button
+                type="button"
+                className="menu-delete"
+                onClick={() => {
+                  setMenuOpen(false)
+                  onDelete(task)
+                }}
+              >
+                Delete task
+              </button>
             </div>
           )}
         </div>

@@ -12,9 +12,6 @@
  * @property {string} dueDate
  * @property {string} createdAt
  * @property {string} updatedAt
- * @property {'None' | 'Daily' | 'Weekly' | 'Monthly'} [recurrence]
- * @property {number[]} [recurrenceWeekdays]
- * @property {string} [projectId]
  *
  * @typedef {Omit<Task, 'id'> & { id?: string }} TaskInput
  */

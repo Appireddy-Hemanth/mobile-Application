@@ -131,7 +131,7 @@ src/
 ├── context/                Task context and derived dashboard state
 ├── data/                   Initial tasks and carousel copy
 ├── hooks/                  Reducer-backed task state and persistence
-├── pages/                  Dashboard and view components
+├── pages/                  Dashboard composition
 └── test/                   Dashboard and persistence tests
 screenshots/                Desktop and mobile README screenshots
 ```
