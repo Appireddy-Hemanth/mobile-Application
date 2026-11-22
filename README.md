@@ -10,7 +10,7 @@ A responsive, single-user task dashboard for planning work, tracking progress, a
 - Six realistic sample tasks, loaded only when no saved task list exists
 - Create tasks with title validation, description, status, priority, and optional due date; new tasks default to **Design**, and existing task categories can be changed while editing
 - Delete tasks after confirmation
-- Cycle task status from **To do** to **In progress** to **Completed**
+- Complete or reopen a task with one click; choose **To do**, **In progress**, or **Completed** in the task workspace or edit form
 - Combine case-insensitive title search, status tabs, and priority filtering
 - Derived total, in-progress, completed, pending-task, and completion-percentage values
 - Three-slide Focus Notes carousel with indicator, previous/next buttons, and arrow-key navigation

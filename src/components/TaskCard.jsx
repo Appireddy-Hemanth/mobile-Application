@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CalendarDays, Check, MoreHorizontal } from 'lucide-react'
 
-const NEXT_STATUS = {
-  'To do': 'In progress',
-  'In progress': 'Completed',
-  Completed: 'To do',
-}
-
 function formatDueDate(value) {
   if (!value) return 'No date'
   const date = new Date(`${value}T12:00:00`)
@@ -19,6 +13,7 @@ export default function TaskCard({ task, onUpdateStatus, onEdit, onDelete }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const actionRef = useRef(null)
   const categoryClass = task.category.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+  const isCompleted = task.status === 'Completed'
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -44,12 +39,12 @@ export default function TaskCard({ task, onUpdateStatus, onEdit, onDelete }) {
       <div className="task-main-cell">
         <button
           type="button"
-          className={`task-status-button ${task.status === 'Completed' ? 'is-completed' : ''}`}
-          onClick={() => onUpdateStatus(task.id, NEXT_STATUS[task.status] || 'To do')}
-          aria-label={`Current status ${task.status}. Move ${task.title} to ${NEXT_STATUS[task.status] || 'To do'}`}
-          title={`Move to ${NEXT_STATUS[task.status] || 'To do'}`}
+          className={`task-status-button ${isCompleted ? 'is-completed' : ''}`}
+          onClick={() => onUpdateStatus(task.id, isCompleted ? 'To do' : 'Completed')}
+          aria-label={`Mark ${task.title} as ${isCompleted ? 'incomplete' : 'completed'}`}
+          title={`Mark ${isCompleted ? 'incomplete' : 'completed'}`}
         >
-          {task.status === 'Completed' ? <Check size={14} /> : null}
+          {isCompleted ? <Check size={14} /> : null}
         </button>
         <div className="task-copy">
           <strong>{task.title}</strong>

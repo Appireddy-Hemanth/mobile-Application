@@ -80,14 +80,13 @@ describe('FocusBoard dashboard', () => {
     expect(within(document.querySelector('.task-list')).queryByText('Design landing page')).not.toBeInTheDocument()
   })
 
-  it('cycles task status and updates calculated statistics', async () => {
+  it('marks a task completed immediately and updates calculated statistics', async () => {
     const user = userEvent.setup()
     render(<App />)
     const task = screen.getByText('Fix mobile navigation').closest('article')
-    await user.click(within(task).getByRole('button', { name: /Current status To do/ }))
-    expect(within(task).getByText('In progress')).toBeInTheDocument()
-    await user.click(within(task).getByRole('button', { name: /Current status In progress/ }))
-    expect(within(task).getByRole('button', { name: /Current status Completed/ })).toBeInTheDocument()
+    await user.click(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as completed' }))
+    expect(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as incomplete' })).toHaveClass('is-completed')
+    expect(within(task).getByText('Completed')).toBeInTheDocument()
     await waitFor(() => {
       expect(JSON.parse(window.localStorage.getItem('focusboard_tasks'))).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: 'fix-mobile-navigation', status: 'Completed' })]),
@@ -96,6 +95,9 @@ describe('FocusBoard dashboard', () => {
 
     const overview = screen.getByRole('region', { name: 'Task overview' })
     expect(within(overview).getByText('3')).toBeInTheDocument()
+
+    await user.click(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as incomplete' }))
+    expect(within(task).getByRole('button', { name: 'Mark Fix mobile navigation as completed' })).not.toHaveClass('is-completed')
   })
 
   it('supports all three focus-note slides and arrow-key navigation', async () => {
