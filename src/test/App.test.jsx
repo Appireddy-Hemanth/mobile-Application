@@ -102,11 +102,14 @@ describe('FocusBoard dashboard', () => {
 
     const carousel = screen.getByRole('region', { name: 'Focus Notes carousel' })
     expect(within(carousel).getByRole('heading', { name: 'Make today count.' })).toBeInTheDocument()
+    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('2 tasks waiting for your attention')
+    expect(carousel.querySelector('.mobile-progress-copy')).toHaveTextContent('33% complete')
+    expect(carousel.querySelector('.progress-track > span')).toHaveStyle({ width: '33%' })
     carousel.focus()
     await user.keyboard('{ArrowRight}')
-    expect(within(carousel).getByRole('heading', { name: 'A clear plan makes deep work easier.' })).toBeInTheDocument()
+    expect(within(carousel).getByRole('heading', { name: 'Small steps, big progress.' })).toBeInTheDocument()
     await user.click(within(carousel).getByRole('button', { name: 'Next slide' }))
-    expect(within(carousel).getByRole('heading', { name: 'Small steps create meaningful momentum.' })).toBeInTheDocument()
+    expect(within(carousel).getByRole('heading', { name: 'Celebrate the wins.' })).toBeInTheDocument()
   })
 
   it('moves between status tabs using arrow keys', async () => {

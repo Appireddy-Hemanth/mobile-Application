@@ -62,29 +62,30 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .secondary-button:hover { background: #f8fafc; }
 .new-task-button { min-width: 124px; }
 
-.focus-banner { position: relative; display: flex; min-height: 152px; align-items: center; justify-content: space-between; overflow: hidden; border-radius: 17px; padding: 18px 30px 38px; background: linear-gradient(112deg, #5b46f6 0%, #6350f5 51%, #6d5dfb 100%); color: #fff; box-shadow: 0 12px 25px #5141d51c; isolation: isolate; }
-.focus-banner-content { position: relative; z-index: 1; width: min(63%, 600px); }
+.focus-banner { position: relative; display: flex; height: 152px; min-height: 152px; align-items: center; justify-content: space-between; overflow: hidden; border-radius: 17px; padding: 18px 30px 38px; background: linear-gradient(112deg, #5b46f6 0%, #6350f5 51%, #6d5dfb 100%); color: #fff; box-shadow: 0 12px 25px #5141d51c; isolation: isolate; }
+.focus-banner-content { position: relative; z-index: 1; width: min(63%, 600px); transform: translateY(-9px); }
 .focus-meta { display: flex; align-items: center; gap: 13px; color: #ddd9ff; font-size: 9px; font-weight: 700; letter-spacing: 1.1px; }
 .focus-meta b { border: 1px solid #ffffff3d; border-radius: 20px; padding: 5px 8px; color: #fff; font-size: 9px; letter-spacing: .45px; }
 .focus-banner h2 { margin: 10px 0 6px; font-size: clamp(22px, 2.1vw, 28px); font-weight: 700; letter-spacing: -.9px; line-height: 1.2; }
 .focus-subtitle { margin: 0; color: #e4e0ff; font-size: 13px; }
 .mobile-greeting, .mobile-focus-progress { display: none; }
-.focus-preview { position: relative; z-index: 1; width: 238px; margin: 0 74px 0 24px; border: 1px solid #ffffff55; border-radius: 12px; padding: 12px 14px 11px; background: #ffffff20; box-shadow: 0 10px 30px #32279c2b; backdrop-filter: blur(7px); }
-.preview-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; color: #e6e3ff; font-size: 9px; font-weight: 700; letter-spacing: .9px; }
-.preview-heading span:first-child { display: flex; align-items: center; gap: 6px; }
-.preview-dot { width: 6px; height: 6px; border-radius: 50%; background: #9ff1d0; box-shadow: 0 0 0 3px #9ff1d033; }
-.focus-preview > strong { display: block; overflow: hidden; color: #fff; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.focus-preview { position: relative; z-index: 1; display: flex; width: 200px; min-height: 100px; flex-direction: column; justify-content: center; margin: 0 120px 0 24px; border: 1px solid #ffffffb8; border-radius: 14px; padding: 13px 15px; background: #fff; box-shadow: -10px 6px 0 #b5aaff65, 0 8px 20px #34279b38; transform: translateY(10px); }
+.preview-heading { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; color: #94a3b8; font-size: 9px; font-weight: 700; letter-spacing: .8px; }
+.preview-status { display: inline-flex; width: 20px; height: 20px; align-items: center; justify-content: center; border-radius: 7px; background: #e8faf2; color: #10a875; }
+.focus-preview > strong { display: block; overflow: hidden; color: #0f172a; font-size: 13px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
 .preview-progress { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-.preview-progress > span, .progress-track { display: block; height: 5px; flex: 1; overflow: hidden; border-radius: 10px; background: #ffffff4c; }
-.preview-progress i, .progress-track span { display: block; height: 100%; border-radius: inherit; background: #b6f3dd; }
-.preview-progress b { color: #fff; font-size: 9px; }
-.focus-banner-bottom { position: absolute; z-index: 1; right: 24px; bottom: 12px; left: 30px; display: flex; align-items: center; justify-content: space-between; }
+.preview-progress > span, .progress-track { display: block; height: 5px; flex: 1; overflow: hidden; border-radius: 10px; background: #edeaff; }
+.preview-progress i, .progress-track span { display: block; height: 100%; border-radius: inherit; background: #7765f6; }
+.preview-progress b { color: #6552e8; font-size: 9px; }
+.focus-banner-bottom { position: absolute; z-index: 1; inset: 0 24px 0 30px; display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 12px; }
 .focus-indicators { display: flex; align-items: center; gap: 6px; }
 .focus-indicators button { width: 21px; height: 4px; border: 0; border-radius: 5px; padding: 0; background: #ffffff62; }
 .focus-indicators button.active { width: 32px; background: #fff; }
-.focus-controls { display: flex; gap: 7px; }
-.focus-controls button { display: inline-flex; width: 29px; height: 29px; align-items: center; justify-content: center; border: 1px solid #ffffff55; border-radius: 8px; background: #ffffff18; color: #fff; }
+.focus-controls { position: absolute; top: 50%; right: 0; display: flex; gap: 8px; transform: translateY(-50%); }
+.focus-controls button { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: #ffffff25; color: #fff; }
+.focus-controls button:last-child { background: #fff; color: #5b46f6; }
 .focus-controls button:hover { background: #ffffff38; }
+.focus-controls button:last-child:hover { background: #f0eeff; }
 .focus-decoration { position: absolute; z-index: 0; border: 1px solid #ffffff17; border-radius: 50%; pointer-events: none; }
 .focus-decoration-one { top: -97px; right: 28%; width: 258px; height: 258px; }
 .focus-decoration-two { top: 20px; right: 12%; display: grid; width: 34px; height: 34px; place-items: center; border-radius: 12px; background: #ffffff1e; color: #fff; transform: rotate(12deg); }
@@ -203,18 +204,24 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .workspace { margin-left: 76px; }
   .topbar { padding: 0 30px; }
   .dashboard { padding-right: 30px; padding-left: 30px; }
-  .focus-banner { min-height: 176px; padding-right: 24px; padding-left: 24px; }
-  .focus-banner-content { width: 53%; }
-  .focus-preview { width: 196px; margin-right: 48px; margin-left: 12px; }
+  .focus-banner { height: 176px; min-height: 176px; padding-right: 24px; padding-left: 24px; }
+  .focus-banner-content { width: 52%; }
+  .focus-preview { width: 180px; min-height: 92px; margin-right: 108px; margin-left: 12px; }
   .task-list-labels, .task-row { grid-template-columns: minmax(190px, 1fr) 105px 82px 95px 44px; gap: 8px; }
   .task-toolbar { align-items: stretch; flex-direction: column; gap: 9px; }
   .task-filters { justify-content: flex-end; }
   .search-field { width: min(100%, 260px); height: 44px; }
   .priority-field { height: 44px; }
   .task-tabs button { min-height: 44px; }
+  .focus-controls { gap: 8px; }
   .focus-controls button { width: 44px; height: 44px; }
   .task-menu-trigger { width: 44px; height: 44px; }
   .new-task-button { min-height: 44px; }
+}
+
+@media (max-width: 760px) and (min-width: 701px) {
+  .focus-banner-content { width: 50%; }
+  .focus-preview { width: 160px; min-height: 88px; margin-right: 96px; }
 }
 
 @media (max-width: 700px) {
@@ -238,8 +245,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .hero-subtitle { max-width: 250px; margin-top: 7px; font-size: 11px; line-height: 1.5; }
   .new-task-button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 12px; }
   .new-task-button span { display: none; }
-  .focus-banner { display: block; min-height: 210px; border-radius: 15px; padding: 20px 19px 48px; }
-  .focus-banner-content { width: 100%; }
+  .focus-banner { display: block; height: auto; min-height: 210px; border-radius: 15px; padding: 20px 19px 48px; }
+  .focus-banner-content { width: 100%; transform: none; }
   .focus-meta { display: none; }
   .mobile-greeting { display: block; margin: 1px 0 9px; color: #d9d4ff; font-size: 9px; font-weight: 750; letter-spacing: 1.05px; }
   .focus-banner h2 { max-width: 275px; margin: 0 0 7px; font-size: 23px; letter-spacing: -.6px; }
@@ -247,11 +254,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .focus-preview, .focus-decoration-two { display: none; }
   .focus-decoration-one { top: 82px; right: -72px; width: 200px; height: 200px; }
   .mobile-focus-progress { display: block; max-width: 320px; margin-top: 25px; }
-  .mobile-progress-copy { display: flex; justify-content: space-between; margin-bottom: 8px; color: #e5e2ff; font-size: 9px; }
+  .mobile-progress-copy { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; color: #e5e2ff; font-size: 9px; }
+  .mobile-progress-copy > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mobile-progress-copy strong { color: #fff; font-weight: 650; }
   .progress-track { height: 5px; }
-  .focus-banner-bottom { right: 12px; bottom: 4px; left: 12px; }
-  .focus-controls { gap: 2px; }
+  .focus-banner-bottom { inset: auto 12px 4px; align-items: center; padding-bottom: 0; }
+  .focus-controls { position: static; gap: 2px; transform: none; }
   .focus-controls button { width: 44px; height: 44px; border-radius: 9px; }
   .focus-indicators button { position: relative; width: 44px; height: 44px; background: transparent; }
   .focus-indicators button.active { width: 44px; background: transparent; }

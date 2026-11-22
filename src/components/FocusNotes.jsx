@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, ArrowRight, Check, Clock3 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
 import { focusNotes } from '../data/focusNotes'
 
 export default function FocusNotes({ tasks = [], pendingCount = 0, completionPercentage = 0 }) {
@@ -29,12 +29,18 @@ export default function FocusNotes({ tasks = [], pendingCount = 0, completionPer
         <h2>{focusNotes[slide].title}</h2>
         <p className="focus-subtitle">{focusNotes[slide].detail}</p>
         <div className="mobile-focus-progress">
-          <div className="mobile-progress-copy"><span>{pendingCount} tasks to go</span><strong>{completionPercentage}% complete</strong></div>
+          <div className="mobile-progress-copy">
+            <span>{pendingCount} {pendingCount === 1 ? 'task' : 'tasks'} waiting for your attention</span>
+            <strong>{completionPercentage}% complete</strong>
+          </div>
           <span className="progress-track"><span style={{ width: `${completionPercentage}%` }} /></span>
         </div>
       </div>
       <div className="focus-preview" aria-label="Next task preview">
-        <div className="preview-heading"><span><Clock3 size={13} /> NEXT UP</span><span className="preview-dot" /></div>
+        <div className="preview-heading">
+          <span className="preview-status"><Check size={12} aria-hidden="true" /></span>
+          <span>NEXT UP</span>
+        </div>
         <strong>{nextTask?.title || 'Take a well-earned break'}</strong>
         <div className="preview-progress"><span><i style={{ width: `${nextTask ? 62 : 100}%` }} /></span><b>{nextTask ? '62%' : '100%'}</b></div>
       </div>
