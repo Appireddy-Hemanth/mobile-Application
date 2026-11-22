@@ -300,7 +300,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .task-status-button { flex: 0 0 28px; width: 44px; height: 44px; }
   .task-status-button::before { width: 20px; height: 20px; }
   .task-copy strong { font-size: 12px; line-height: 1.4; white-space: normal; }
-  .task-copy p { display: -webkit-box; max-width: 260px; margin-top: 4px; overflow: hidden; font-size: 10px; line-height: 1.45; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .task-copy p { display: -webkit-box; max-width: 260px; margin-top: 4px; overflow: hidden; font-size: 10px; line-height: 1.45; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
   .mobile-task-status { display: none; }
   .task-category-cell { grid-area: category; }
   .task-priority-cell { grid-area: priority; justify-self: start; }
