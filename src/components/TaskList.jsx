@@ -1,9 +1,9 @@
 import { CalendarDays, ListTodo, Plus } from 'lucide-react'
 import TaskCard from './TaskCard'
 
-export default function TaskList({ tasks, onEdit, onDelete, onUpdateStatus, onAdd, onReset }) {
+export default function TaskList({ tasks, activeTabId, onEdit, onDelete, onUpdateStatus, onAdd, onReset }) {
   return (
-    <div className="task-list" aria-live="polite">
+    <div className="task-list" id="task-list-panel" role="tabpanel" aria-labelledby={activeTabId} tabIndex={0} aria-live="polite">
       {tasks.length > 0 && (
         <div className="task-list-labels" aria-hidden="true">
           <span>Task</span><span>Category</span><span>Priority</span><span>Due date</span><span />

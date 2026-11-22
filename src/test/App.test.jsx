@@ -32,6 +32,11 @@ describe('FocusBoard dashboard', () => {
     await user.type(screen.getByLabelText('Title *'), 'Audit test coverage')
     await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
     expect(await screen.findByText('Audit test coverage')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(JSON.parse(window.localStorage.getItem('focusboard_tasks'))).toEqual(
+        expect.arrayContaining([expect.objectContaining({ title: 'Audit test coverage' })]),
+      )
+    })
   })
 
   it('edits a task and deletes it only after confirmation', async () => {
@@ -39,7 +44,13 @@ describe('FocusBoard dashboard', () => {
     render(<App />)
 
     const row = within(document.querySelector('.task-list')).getByText('Design landing page').closest('article')
-    await user.click(row.querySelector('summary'))
+    const actions = within(row).getByRole('button', { name: 'Actions for Design landing page' })
+    await user.click(actions)
+    expect(actions).toHaveAttribute('aria-expanded', 'true')
+    await user.keyboard('{Escape}')
+    expect(actions).toHaveAttribute('aria-expanded', 'false')
+    expect(actions).toHaveFocus()
+    await user.click(actions)
     await user.click(within(row).getByRole('button', { name: 'Edit task' }))
     const title = screen.getByLabelText('Title *')
     await user.clear(title)
@@ -48,7 +59,7 @@ describe('FocusBoard dashboard', () => {
     expect(await within(document.querySelector('.task-list')).findByText('Landing page refresh')).toBeInTheDocument()
 
     const editedRow = within(document.querySelector('.task-list')).getByText('Landing page refresh').closest('article')
-    await user.click(editedRow.querySelector('summary'))
+    await user.click(within(editedRow).getByRole('button', { name: 'Actions for Landing page refresh' }))
     await user.click(within(editedRow).getByRole('button', { name: 'Delete task' }))
     expect(screen.getByRole('alertdialog')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Move to deleted' }))
@@ -75,6 +86,11 @@ describe('FocusBoard dashboard', () => {
     expect(within(task).getByText('In progress')).toBeInTheDocument()
     await user.click(within(task).getByRole('button', { name: /Current status In progress/ }))
     expect(within(task).getByRole('button', { name: /Current status Completed/ })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(JSON.parse(window.localStorage.getItem('focusboard_tasks'))).toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: 'review-onboarding-copy', status: 'Completed' })]),
+      )
+    })
 
     const overview = screen.getByRole('region', { name: 'Task overview' })
     expect(within(overview).getByText('3')).toBeInTheDocument()
@@ -91,6 +107,17 @@ describe('FocusBoard dashboard', () => {
     expect(within(carousel).getByRole('heading', { name: 'A clear plan makes deep work easier.' })).toBeInTheDocument()
     await user.click(within(carousel).getByRole('button', { name: 'Next slide' }))
     expect(within(carousel).getByRole('heading', { name: 'Small steps create meaningful momentum.' })).toBeInTheDocument()
+  })
+
+  it('moves between status tabs using arrow keys', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const allTab = screen.getByRole('tab', { name: /All/ })
+    allTab.focus()
+    await user.keyboard('{ArrowRight}')
+    expect(screen.getByRole('tab', { name: /To do/ })).toHaveAttribute('aria-selected', 'true')
+    await user.keyboard('{End}')
+    expect(screen.getByRole('tab', { name: /Completed/ })).toHaveFocus()
   })
 
   it('opens the modal with Escape and exposes Calendar and Settings placeholders', async () => {

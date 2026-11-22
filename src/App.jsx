@@ -159,6 +159,7 @@ function FocusBoardApp() {
             setDeleteTarget(null)
             setToast('Task deleted')
             window.setTimeout(() => setToast(''), 2400)
+            window.setTimeout(() => document.getElementById('tasks-title')?.focus(), 0)
           }}
         />
       )}

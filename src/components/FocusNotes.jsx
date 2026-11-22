@@ -13,8 +13,14 @@ export default function FocusNotes({ tasks = [], pendingCount = 0, completionPer
       aria-label="Focus Notes carousel"
       tabIndex={0}
       onKeyDown={event => {
-        if (event.key === 'ArrowLeft') changeSlide(-1)
-        if (event.key === 'ArrowRight') changeSlide(1)
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault()
+          changeSlide(-1)
+        }
+        if (event.key === 'ArrowRight') {
+          event.preventDefault()
+          changeSlide(1)
+        }
       }}
     >
       <div className="focus-banner-content" aria-live="polite">

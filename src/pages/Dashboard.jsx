@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { ArrowUpRight, CheckCircle2, CircleDashed, ListTodo, Plus, Search, Sparkles } from 'lucide-react'
 import { useTaskContext } from '../context/useTaskContext'
 import FocusNotesCarousel from '../components/FocusNotesCarousel'
@@ -7,6 +7,7 @@ import TaskList from '../components/TaskList'
 const TABS = ['All', 'To do', 'In progress', 'Completed']
 
 export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
+  const tabRefs = useRef([])
   const {
     tasks,
     dispatch,
@@ -38,6 +39,18 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
     setPriorityFilter('All')
   }
 
+  const handleTabKeyDown = (event, index) => {
+    let nextIndex = index
+    if (event.key === 'ArrowRight') nextIndex = (index + 1) % TABS.length
+    else if (event.key === 'ArrowLeft') nextIndex = (index - 1 + TABS.length) % TABS.length
+    else if (event.key === 'Home') nextIndex = 0
+    else if (event.key === 'End') nextIndex = TABS.length - 1
+    else return
+    event.preventDefault()
+    setStatusFilter(TABS[nextIndex])
+    tabRefs.current[nextIndex]?.focus()
+  }
+
   const changeStatus = (id, status) => dispatch({ type: 'UPDATE_STATUS', payload: { id, status } })
   const stats = [
     { title: 'Total tasks', count: totalCount, supporting: 'Across all projects', icon: ListTodo, tone: 'purple' },
@@ -53,7 +66,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
           <h1>Your work, in focus.</h1>
           <p className="hero-subtitle">Plan your day, stay organized, and celebrate small wins.</p>
         </div>
-        <button type="button" className="primary-button new-task-button" onClick={onAddTask}>
+        <button type="button" className="primary-button new-task-button" onClick={onAddTask} aria-label="New task">
           <Plus size={18} aria-hidden="true" /><span>New task</span>
         </button>
       </section>
@@ -75,7 +88,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
         <header className="tasks-section-heading">
           <div>
             <p className="eyebrow">YOUR WORKSPACE</p>
-            <h2 id="tasks-title">My tasks</h2>
+            <h2 id="tasks-title" tabIndex={-1}>My tasks</h2>
             <p>Manage and track everything in one place.</p>
           </div>
           <button type="button" className="text-button" onClick={resetFilters}>View all tasks <ArrowUpRight size={15} /></button>
@@ -89,12 +102,17 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
                 : tasks.filter(task => task.status === tab).length
               return (
                 <button
+                  ref={element => { tabRefs.current[TABS.indexOf(tab)] = element }}
                   type="button"
                   role="tab"
                   key={tab}
+                  id={`task-filter-tab-${TABS.indexOf(tab)}`}
+                  aria-controls="task-list-panel"
                   aria-selected={statusFilter === tab}
+                  tabIndex={statusFilter === tab ? 0 : -1}
                   className={statusFilter === tab ? 'is-selected' : ''}
                   onClick={() => setStatusFilter(tab)}
+                  onKeyDown={event => handleTabKeyDown(event, TABS.indexOf(tab))}
                 >
                   {tab}<span>{count}</span>
                 </button>
@@ -127,6 +145,7 @@ export default function Dashboard({ onAddTask, onEditTask, onDeleteTask }) {
 
         <TaskList
           tasks={visibleTasks}
+          activeTabId={`task-filter-tab-${TABS.indexOf(statusFilter)}`}
           onEdit={onEditTask}
           onDelete={onDeleteTask}
           onUpdateStatus={changeStatus}

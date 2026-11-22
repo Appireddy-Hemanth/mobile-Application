@@ -122,13 +122,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .search-field input::placeholder { color: #94a3b8; }
 .priority-field select { height: 100%; border: 0; border-radius: inherit; padding: 0 28px 0 10px; outline: none; background: #fff; color: #475569; font-size: 11px; }
 .task-list { padding-top: 4px; }
-.task-list-labels { display: grid; grid-template-columns: minmax(220px, 1fr) 125px 100px 110px 34px; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; color: #94a3b8; font-size: 9px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
-.task-row { position: relative; display: grid; grid-template-columns: minmax(220px, 1fr) 125px 100px 110px 34px; align-items: center; gap: 12px; min-height: 75px; border: 1px solid #e8edf4; border-radius: 11px; margin-bottom: 9px; padding: 11px 12px; background: #fff; box-shadow: 0 2px 5px #0f172a04; transition: border-color .16s ease, box-shadow .16s ease; }
+.task-list-labels { display: grid; grid-template-columns: minmax(220px, 1fr) 125px 100px 110px 44px; align-items: center; gap: 12px; min-height: 40px; padding: 0 12px; color: #94a3b8; font-size: 9px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+.task-row { position: relative; display: grid; grid-template-columns: minmax(220px, 1fr) 125px 100px 110px 44px; align-items: center; gap: 12px; min-height: 75px; border: 1px solid #e8edf4; border-radius: 11px; margin-bottom: 9px; padding: 11px 12px; background: #fff; box-shadow: 0 2px 5px #0f172a04; transition: border-color .16s ease, box-shadow .16s ease; }
 .task-row:hover { border-color: #d7dded; box-shadow: 0 5px 14px #0f172a0b; }
 .task-main-cell { display: flex; min-width: 0; align-items: flex-start; gap: 11px; }
-.task-status-button { display: inline-flex; flex: 0 0 auto; width: 22px; height: 22px; align-items: center; justify-content: center; border: 1.5px solid #cbd5e1; border-radius: 7px; margin-top: 1px; background: #fff; color: #fff; transition: border-color .15s, background .15s; }
-.task-status-button:hover { border-color: #8b7cf6; background: #f5f3ff; }
-.task-status-button.is-completed { border-color: #18a66a; background: #18a66a; }
+.task-status-button { position: relative; display: inline-flex; flex: 0 0 44px; width: 44px; height: 44px; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: #fff; }
+.task-status-button::before { position: absolute; width: 22px; height: 22px; border: 1.5px solid #cbd5e1; border-radius: 7px; background: #fff; content: ""; transition: border-color .15s, background .15s; }
+.task-status-button:hover::before { border-color: #8b7cf6; background: #f5f3ff; }
+.task-status-button.is-completed::before { border-color: #18a66a; background: #18a66a; }
+.task-status-button svg { position: relative; z-index: 1; }
 .task-copy { min-width: 0; }
 .task-copy strong { display: block; overflow: hidden; color: #1e293b; font-size: 12px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
 .task-copy p { overflow: hidden; margin: 5px 0 0; color: #94a3b8; font-size: 10px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
@@ -145,9 +147,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .task-due-cell svg { color: #94a3b8; }
 .task-action-cell { justify-self: end; }
 .task-menu { position: relative; }
-.task-menu summary { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: 8px; color: #94a3b8; cursor: pointer; list-style: none; }
-.task-menu summary::-webkit-details-marker { display: none; }
-.task-menu summary:hover, .task-menu[open] summary { background: #f1f5f9; color: #475569; }
+.task-menu-trigger { display: inline-flex; width: 32px; height: 32px; align-items: center; justify-content: center; border: 0; border-radius: 8px; background: transparent; color: #94a3b8; }
+.task-menu-trigger:hover, .task-menu-trigger[aria-expanded="true"] { background: #f1f5f9; color: #475569; }
 .task-menu-items { position: absolute; z-index: 4; top: calc(100% + 4px); right: 0; display: grid; width: 136px; gap: 2px; border: 1px solid #e2e8f0; border-radius: 9px; padding: 5px; background: #fff; box-shadow: 0 8px 24px #0f172a1a; }
 .task-menu-items button { min-height: 34px; border: 0; border-radius: 6px; padding: 0 9px; background: transparent; color: #334155; font-size: 11px; text-align: left; }
 .task-menu-items button:hover { background: #f8fafc; }
@@ -204,10 +205,15 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .dashboard { padding-right: 30px; padding-left: 30px; }
   .focus-banner { padding-right: 24px; padding-left: 24px; }
   .focus-preview { width: 225px; margin-right: 12px; }
-  .task-list-labels, .task-row { grid-template-columns: minmax(190px, 1fr) 105px 82px 95px 32px; gap: 8px; }
+  .task-list-labels, .task-row { grid-template-columns: minmax(190px, 1fr) 105px 82px 95px 44px; gap: 8px; }
   .task-toolbar { align-items: stretch; flex-direction: column; gap: 9px; }
   .task-filters { justify-content: flex-end; }
-  .search-field { width: min(100%, 260px); }
+  .search-field { width: min(100%, 260px); height: 44px; }
+  .priority-field { height: 44px; }
+  .task-tabs button { min-height: 44px; }
+  .focus-controls button { width: 44px; height: 44px; }
+  .task-menu-trigger { width: 44px; height: 44px; }
+  .new-task-button { min-height: 44px; }
 }
 
 @media (max-width: 700px) {
@@ -219,7 +225,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .mobile-header .brand-symbol { width: 28px; height: 28px; border-radius: 9px; }
   .mobile-header .avatar { width: 33px; height: 33px; }
   .mobile-navigation { position: fixed; z-index: 15; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); min-height: calc(64px + env(safe-area-inset-bottom)); padding: 5px 8px env(safe-area-inset-bottom); border-top: 1px solid #e9edf3; background: #fffffffa; box-shadow: 0 -7px 20px #0f172a08; backdrop-filter: blur(12px); }
-  .mobile-nav-link { position: relative; display: flex; min-width: 0; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 0; border-radius: 9px; background: transparent; color: #94a3b8; font-size: 9px; font-weight: 550; }
+  .mobile-nav-link { position: relative; display: flex; width: 100%; min-width: 0; min-height: 44px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border: 0; border-radius: 9px; background: transparent; color: #94a3b8; font-size: 9px; font-weight: 550; }
   .mobile-nav-link.is-active { color: var(--brand); }
   .mobile-nav-link.is-active::before { position: absolute; top: -5px; width: 24px; height: 3px; border-radius: 0 0 5px 5px; background: var(--brand); content: ""; }
   .dashboard { padding: 27px 18px 22px; }
@@ -227,7 +233,7 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .hero .eyebrow { margin-bottom: 7px; font-size: 9px; }
   .hero h1 { max-width: 240px; font-size: 25px; letter-spacing: -.8px; }
   .hero-subtitle { max-width: 250px; margin-top: 7px; font-size: 11px; line-height: 1.5; }
-  .new-task-button { width: 42px; min-width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 12px; }
+  .new-task-button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 12px; }
   .new-task-button span { display: none; }
   .focus-banner { display: block; min-height: 210px; border-radius: 15px; padding: 20px 19px 48px; }
   .focus-banner-content { width: 100%; }
@@ -241,11 +247,12 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .mobile-progress-copy { display: flex; justify-content: space-between; margin-bottom: 8px; color: #e5e2ff; font-size: 9px; }
   .mobile-progress-copy strong { color: #fff; font-weight: 650; }
   .progress-track { height: 5px; }
-  .focus-banner-bottom { right: 16px; bottom: 12px; left: 19px; }
-  .focus-controls { gap: 5px; }
-  .focus-controls button { width: 29px; height: 29px; border-radius: 9px; }
-  .focus-indicators button { width: 18px; }
-  .focus-indicators button.active { width: 28px; }
+  .focus-banner-bottom { right: 12px; bottom: 4px; left: 12px; }
+  .focus-controls { gap: 2px; }
+  .focus-controls button { width: 44px; height: 44px; border-radius: 9px; }
+  .focus-indicators button { position: relative; width: 44px; height: 44px; background: transparent; }
+  .focus-indicators button::before { position: absolute; top: 20px; left: 13px; width: 18px; height: 4px; border-radius: 5px; background: #ffffff62; content: ""; }
+  .focus-indicators button.active::before { left: 8px; width: 28px; background: #fff; }
   .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 16px 0 29px; }
   .stat-card { min-height: 128px; padding: 12px 13px; }
   .stat-icon { width: 31px; height: 31px; border-radius: 9px; }
@@ -260,19 +267,18 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .text-button svg { width: 13px; }
   .task-toolbar { display: flex; flex-direction: column-reverse; align-items: stretch; gap: 12px; padding-bottom: 11px; }
   .task-filters { display: grid; grid-template-columns: minmax(0, 1fr) 125px; gap: 8px; }
-  .search-field, .priority-field { height: 39px; }
+  .search-field, .priority-field { height: 44px; }
   .search-field { width: auto; }
   .search-field input { font-size: 11px; }
   .priority-field select { width: 100%; font-size: 10px; }
   .task-tabs { gap: 3px; overflow-x: auto; scrollbar-width: none; }
   .task-tabs::-webkit-scrollbar { display: none; }
-  .task-tabs button { min-height: 34px; flex: 0 0 auto; gap: 5px; padding: 0 8px; font-size: 9px; }
+  .task-tabs button { min-height: 44px; flex: 0 0 auto; gap: 5px; padding: 0 8px; font-size: 9px; }
   .task-tabs button span { min-width: 17px; height: 17px; font-size: 8px; }
   .task-list { padding-top: 11px; }
   .task-list-labels { display: none; }
   .task-row { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "main action" "category priority" "due due"; gap: 11px 8px; min-height: 0; margin-bottom: 9px; padding: 13px 12px 12px; border-radius: 11px; }
   .task-main-cell { grid-area: main; align-items: flex-start; gap: 9px; }
-  .task-status-button { width: 22px; height: 22px; }
   .task-copy strong { font-size: 11px; line-height: 1.4; white-space: normal; }
   .task-copy p { display: -webkit-box; max-width: 260px; margin-top: 4px; overflow: hidden; font-size: 9px; line-height: 1.45; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   .mobile-task-status { display: block; margin-top: 5px; color: #94a3b8; font-size: 9px; }
@@ -280,7 +286,8 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .task-priority-cell { grid-area: priority; justify-self: start; }
   .task-due-cell { grid-area: due; padding-top: 2px; font-size: 9px; }
   .task-action-cell { grid-area: action; align-self: start; }
-  .task-menu summary { width: 30px; height: 30px; }
+  .task-menu-trigger { width: 44px; height: 44px; }
+  .task-menu-items button { min-height: 44px; }
   .category-badge, .priority-badge { min-height: 22px; font-size: 9px; }
   .empty-tasks { padding: 36px 10px; }
   .empty-tasks p { max-width: 240px; line-height: 1.5; }
@@ -290,12 +297,13 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
   .modal-backdrop { align-items: end; padding: 0; }
   .task-modal, .confirm-modal { width: 100%; max-height: 92dvh; border-radius: 18px 18px 0 0; padding: 21px 19px calc(17px + env(safe-area-inset-bottom)); }
   .task-modal .modal-header { margin-bottom: 13px; }
+  .modal-close { width: 44px; height: 44px; }
   .task-modal .form-label { margin-top: 12px; }
-  .task-modal form > input, .task-modal textarea, .task-modal select, .modal-field-grid input, .modal-field-grid select { min-height: 42px; font-size: 12px; }
+  .task-modal form > input, .task-modal textarea, .task-modal select, .modal-field-grid input, .modal-field-grid select { min-height: 44px; font-size: 12px; }
   .task-modal textarea { min-height: 75px; }
   .modal-field-grid { column-gap: 10px; }
   .modal-actions { margin-top: 17px; }
-  .modal-actions .primary-button, .modal-actions .secondary-button { min-height: 42px; }
+  .modal-actions .primary-button, .modal-actions .secondary-button { min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
