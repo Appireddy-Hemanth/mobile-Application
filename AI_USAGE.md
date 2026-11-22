@@ -8,7 +8,7 @@
 
 1. “Build a responsive FocusBoard task dashboard that matches the supplied desktop, tablet, and mobile requirements.”
 2. “Use React Context and `useReducer` as the task source of truth, derive dashboard totals, and persist user changes in localStorage.”
-3. “Implement accessible task creation, editing, status cycling, deletion confirmation, combined filters, and a keyboard-navigable three-slide carousel.”
+3. “Implement accessible task creation and editing, one-click task completion and reopening, deletion confirmation, combined filters, and a keyboard-navigable three-slide carousel.”
 
 ## AI-assisted areas
 

@@ -1,65 +1,106 @@
 # FocusBoard
 
-A responsive, single-user task dashboard for planning work, tracking progress, and keeping a small set of priorities in focus.
+<p align="center">
+  <strong>A calmer way to plan, track, and finish your work.</strong>
+  <br />
+  A responsive, single-user task dashboard built with React, designed around clear priorities and immediate feedback.
+</p>
 
-**Live application:** [https://focusboard-dashboard-tan.vercel.app/](https://focusboard-dashboard-tan.vercel.app/)
-**Source code:** [Appireddy-Hemanth/mobile-Application](https://github.com/Appireddy-Hemanth/mobile-Application)
+<p align="center">
+  <a href="https://focusboard-dashboard-tan.vercel.app/">
+    <img src="https://img.shields.io/badge/Live%20demo-Open%20FocusBoard-5B46F6?style=for-the-badge&logo=vercel&logoColor=white" alt="Open the FocusBoard live demo" />
+  </a>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=111827" alt="React 19" />
+  <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 8" />
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/Appireddy-Hemanth/mobile-Application">Source repository</a>
+  ·
+  <a href="https://focusboard-dashboard-tan.vercel.app/">Live application</a>
+</p>
+
+## Overview
+
+FocusBoard helps one person organize a small workload without the overhead of a backend or account system. The dashboard combines task management, calculated progress, responsive navigation, and a three-slide **Focus Notes** carousel. Task changes update the interface immediately and persist in the current browser.
+
+## Product preview
+
+### Desktop · 1440 × 1000
+
+![FocusBoard dashboard at desktop width](./screenshots/desktop.png)
+
+### Mobile · 390 × 1128
+
+<p align="center">
+  <img src="./screenshots/mobile.png" alt="FocusBoard dashboard at mobile width" width="300" />
+</p>
 
 ## Features
 
-- Six realistic sample tasks, loaded only when no saved task list exists
-- Create tasks with title validation, description, status, priority, and optional due date; new tasks default to **Design**, and existing task categories can be changed while editing
-- Delete tasks after confirmation
-- Complete or reopen a task with one click; choose **To do**, **In progress**, or **Completed** in the task workspace or edit form
-- Combine case-insensitive title search, status tabs, and priority filtering
-- Derived total, in-progress, completed, pending-task, and completion-percentage values
-- Three-slide Focus Notes carousel with indicator, previous/next buttons, and arrow-key navigation
-- Browser persistence using `localStorage`; a valid saved empty list is preserved
-- Accessible labels, keyboard focus states, Escape-to-close dialogs, and responsive navigation
-- Calendar and Settings are intentionally scoped placeholder states, not additional assessment screens
+- **Task management:** Create and edit tasks, validate required titles, and delete tasks with confirmation.
+- **Fast completion:** Mark a task complete or reopen it with one click. Choose **To do**, **In progress**, or **Completed** in the task editor.
+- **Combined task discovery:** Search task titles case-insensitively and combine search with status tabs and priority filtering.
+- **Live dashboard metrics:** Total, in-progress, completed, pending, and completion-percentage values are derived from the task state. Carousel progress updates with the same completion percentage.
+- **Focus Notes carousel:** Three slides with previous/next buttons, active indicators, and keyboard navigation.
+- **Persistent workspace:** Task edits are saved in `localStorage` and restored after refresh. Six sample tasks are used only when there is no saved task list.
+- **Accessible interactions:** Semantic controls, visible keyboard focus, labeled inputs, dialog focus management, and Escape-to-close behavior.
 
-## Responsive layout
+## Responsive design
 
-The interface adapts across the requested reference widths:
+The layout is tuned for the supplied reference widths:
 
-| Width | Layout |
-|---|---|
-| **1440px desktop** | 240px workspace sidebar, breadcrumb header, three-column statistics, task table |
-| **768px tablet** | Compact icon sidebar, fluid dashboard cards and filters |
-| **390px mobile** | Compact top header, two-column statistics, stacked task cards, fixed bottom navigation |
+| Viewport | Layout |
+| --- | --- |
+| **1440px desktop** | 240px workspace sidebar, breadcrumb header, three-column statistics, and task rows |
+| **768px tablet** | Compact navigation and fluid dashboard sections |
+| **390px mobile** | Mobile header, two-column statistics, stacked task cards, and fixed bottom navigation |
 
-The Create/Edit Task dialog follows the supplied Figma field layout and adapts to narrow viewports without horizontal scrolling.
-The desktop Focus Notes banner follows the Figma reference frame size of **1106 × 152 px**; screenshots are captured at the supplied **1440 × 1000 px** desktop and **390 × 1128 px** mobile reference sizes.
+The task dialog adapts to narrow screens without horizontal scrolling. The bundled reference screenshots are captured at 1440 × 1000 and 390 × 1128.
+
+## Navigation scope
+
+| Path | Behavior |
+| --- | --- |
+| `/` | Dashboard overview |
+| `/tasks` | Dashboard; the My tasks navigation takes you to the task section |
+| `/calendar` | Scope-aligned placeholder |
+| `/settings` | Scope-aligned placeholder |
+
+Calendar and Settings remain placeholders rather than additional assessment screens. `vercel.json` rewrites application routes to the Vite entry point so client-side navigation works on refresh.
 
 ## Tech stack
 
-- React 19 and Vite 8
-- JavaScript with JSDoc
-- Inter typography with a system-font fallback
-- Tailwind CSS 4 tooling, with focused component styling in CSS
-- Lucide React icons
-- React Context and a `useReducer` task store
-- Vitest and Testing Library
+- **React 19** with JavaScript and JSDoc
+- **Vite 8** for development and production builds
+- **Tailwind CSS 4** Vite integration, with focused component styling in CSS
+- **Lucide React** icons
+- **React Context + `useReducer`** for task state
+- **Vitest** and **Testing Library** for interaction and persistence tests
 
-## State and architecture
+## State and data flow
 
-`TaskProvider` exposes the task state through React Context. The `useTasks` hook initializes the reducer from the `focusboard_tasks` localStorage key and all task mutations return new arrays/objects rather than modifying existing state. The dashboard calculates its statistics and combined search/status/priority result list from that shared task state.
-
-When the key is absent, the six sample tasks initialize the workspace and are saved. Valid saved tasks—including an empty array—are restored on refresh rather than replaced. Invalid saved data is not silently replaced with samples on initial load. Task additions, edits, status changes, and confirmed deletions are persisted in the browser.
+`TaskProvider` makes the reducer-backed task state available to the dashboard through React Context. Task actions produce new state rather than mutating existing task objects. Counts, filtered results, and completion percentage are derived from that shared state, so task rows, statistics, and Focus Notes stay in sync.
 
 ```text
-src/
-├── components/     Task rows, task dialog, confirmation dialog, Focus Notes carousel
-├── context/        Task provider and context hook
-├── data/           Initial tasks and carousel copy
-├── hooks/          Reducer-backed task state and localStorage persistence
-├── pages/          Dashboard composition
-└── test/           Dashboard and utility tests
+Task controls
+    ↓
+Task reducer → React Context → task rows, filters, statistics, carousel progress
+    ↓
+localStorage persistence
 ```
+
+The `focusboard_tasks` key is initialized with the six sample tasks only when the key is absent. A saved empty list stays empty, and invalid saved data is not silently replaced with samples. The completion percentage is calculated as completed tasks divided by total tasks; it is `0%` when there are no tasks.
 
 ## Getting started
 
-Requires Node.js 20.19+ or Node.js 22+ and npm.
+### Requirements
+
+- Node.js **20.19+** or **22.12+**
+- npm
+
+### Install and run
 
 ```bash
 git clone https://github.com/Appireddy-Hemanth/mobile-Application.git
@@ -68,35 +109,49 @@ npm install
 npm run dev
 ```
 
-## Commands
+Open the local URL printed by Vite (by default, `http://localhost:5173`).
 
-```bash
-npm run dev      # start the Vite development server
-npm test         # run the Vitest suite
-npm run lint     # run Oxlint
-npm run build    # create the production bundle
-npm run preview  # preview the production bundle locally
+### Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the local Vite development server |
+| `npm test` | Run the Vitest suite |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run lint` | Run Oxlint |
+| `npm run build` | Create the production bundle in `dist/` |
+| `npm run preview` | Preview the production build locally |
+
+## Project structure
+
+```text
+src/
+├── App.jsx                 App shell and route-level composition
+├── components/             Task controls, dialogs, cards, and Focus Notes
+├── context/                Task context and derived dashboard state
+├── data/                   Initial tasks and carousel copy
+├── hooks/                  Reducer-backed task state and persistence
+├── pages/                  Dashboard and view components
+└── test/                   Dashboard and persistence tests
+screenshots/                Desktop and mobile README screenshots
 ```
 
-## Screenshots
+## Deployment
 
-### Desktop — 1440 × 1000
+The public demo is hosted on Vercel:
 
-![FocusBoard dashboard at desktop width](./screenshots/desktop.png)
+**[focusboard-dashboard-tan.vercel.app](https://focusboard-dashboard-tan.vercel.app/)**
 
-### Mobile — 390 × 1128
+The source is available in the **[GitHub repository](https://github.com/Appireddy-Hemanth/mobile-Application)**. To deploy your own copy, import the repository into Vercel and use the standard Vite build command, `npm run build`, with `dist` as the output directory.
 
-<div align="center">
-  <img src="./screenshots/mobile.png" alt="FocusBoard dashboard at mobile width" width="390">
-</div>
+## Data and limitations
 
-## Scope and limitations
-
-- FocusBoard is frontend-only. Tasks are local to the current browser and are not synchronized across devices.
-- Calendar and Settings navigation display scope-aligned placeholders.
-- The Focus Notes carousel contains three curated slides; automatic rotation is not used.
-- Task data is stored in browser `localStorage`; clearing site data removes the saved workspace.
+- This is a frontend-only, single-user project; it has no API, login, or cloud synchronization.
+- Tasks and preferences belong to the current browser. Clearing site data removes the saved workspace.
+- The sample tasks appear only when no saved task list exists.
+- Calendar and Settings are intentionally scoped placeholders.
+- The carousel is user-controlled; automatic rotation is not enabled.
 
 ## AI usage
 
-AI assistance disclosure and representative prompts are documented in [AI_USAGE.md](./AI_USAGE.md).
+AI tools and representative prompts used during development are disclosed in [AI_USAGE.md](./AI_USAGE.md).
