@@ -29,11 +29,13 @@ The interface adapts across the requested reference widths:
 | **390px mobile** | Compact top header, two-column statistics, stacked task cards, fixed bottom navigation |
 
 The Create/Edit Task dialog also adapts to narrow viewports without horizontal scrolling.
+The desktop Focus Notes banner follows the Figma reference frame size of **1106 × 152 px**; screenshots are captured at the supplied **1440 × 1000 px** desktop and **390 × 1128 px** mobile reference sizes.
 
 ## Tech stack
 
 - React 19 and Vite 8
 - JavaScript with JSDoc
+- Inter typography with a system-font fallback
 - Tailwind CSS 4 tooling, with focused component styling in CSS
 - Lucide React icons
 - React Context and a `useReducer` task store
