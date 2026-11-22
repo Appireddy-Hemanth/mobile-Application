@@ -1,34 +1,22 @@
 # AI Usage Disclosure
 
-## Tools Used
+## Tools used
 
-- VS Code
-- GitHub Copilot / Copilot coding assistance
+- GitHub Copilot in VS Code
 
-## Representative Prompts
+## Representative prompts
 
-1. “Set up a modular React and Vite task dashboard with a Context and `useReducer` data layer.”
-2. “Build the responsive desktop, tablet, and mobile dashboard to match the supplied Figma layout.”
-3. “Create accessible task and delete modals with validation, focus trapping, Escape handling, and localStorage persistence.”
-4. “Audit the full codebase for persistence, overflow, accessibility, and direct state mutation edge cases.”
+1. “Build a responsive FocusBoard task dashboard that matches the supplied desktop, tablet, and mobile requirements.”
+2. “Use React Context and `useReducer` as the task source of truth, derive dashboard totals, and persist user changes in localStorage.”
+3. “Implement accessible task creation, editing, status cycling, deletion confirmation, combined filters, and a keyboard-navigable three-slide carousel.”
 
-## AI-Assisted Areas
+## AI-assisted areas
 
-- Component and folder scaffolding
-- React Context and `useReducer` setup
-- Reusable `useTasks` hook and exact `focusboard_tasks` storage-key setup
-- Master platform sections for projects, habits, assistant, analytics, and achievements
-- Separate assistant recommendation engine and gamification reward utility
-- React Router and Vitest/Testing Library test setup
-- Derived statistics and filtered task memoization
-- Local storage initialization and guarded persistence
-- Task and delete modal form structure
-- Responsive custom CSS grid and breakpoint refinements
-- Carousel, status controls, and accessible icon-button labels
-- README and assessment documentation
+- Dashboard layout, navigation, responsive styling, and Focus Notes carousel
+- Task creation/editing and delete-confirmation interactions
+- Reducer-backed local task persistence and derived dashboard data
+- Focused component tests and project documentation
 
-## Human Review and Refinement Example
+## Review and verification
 
-The AI suggested a local-storage hydration effect that could synchronize state from a generic hook immediately on first render. I reviewed the initialization path and refined it so saved tasks are read and validated in the initial state before reducer initialization, preventing valid saved user data from being replaced during refresh.
-
-I also manually reviewed and corrected responsive touch target sizes, including expanding mobile task-check, icon, carousel, and modal controls to at least 44 × 44 pixels, and verified no horizontal overflow at 390px. Priority and status colors and final spacing were adjusted in the project stylesheet to provide consistent visual contrast across desktop and mobile layouts.
+The implementation was reviewed against the assessment requirements. A potential issue where malformed saved data could be replaced by sample tasks was corrected: sample data is seeded only when the task key is absent, and a valid saved empty list remains empty. The task form was also checked to ensure only the title is required, with due date optional. The automated test suite (18 tests), lint, and production build passed. Browser checks at 390px, 768px, and 1440px confirmed the responsive navigation and no horizontal overflow.

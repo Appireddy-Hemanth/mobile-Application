@@ -15,11 +15,13 @@ function isValidTaskList(value) {
   return value.every(task => {
     if (!task || typeof task.id !== 'string' || !task.id || seenIds.has(task.id)) return false
     seenIds.add(task.id)
-    const validDueDate =
-      typeof task.dueDate === 'string' &&
-      /^\d{4}-\d{2}-\d{2}$/.test(task.dueDate) &&
-      !Number.isNaN(new Date(`${task.dueDate}T00:00:00Z`).getTime()) &&
-      new Date(`${task.dueDate}T00:00:00Z`).toISOString().slice(0, 10) === task.dueDate
+    const validDueDate = task.dueDate === ''
+      || (
+        typeof task.dueDate === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(task.dueDate) &&
+        !Number.isNaN(new Date(`${task.dueDate}T00:00:00Z`).getTime()) &&
+        new Date(`${task.dueDate}T00:00:00Z`).toISOString().slice(0, 10) === task.dueDate
+      )
     return (
       typeof task.title === 'string' &&
       task.title.trim().length > 0 &&
@@ -49,27 +51,30 @@ function normalizeTasks(tasks) {
   }))
 }
 
-function loadTasks() {
-  if (typeof window === 'undefined') return normalizeTasks(initialTasks)
+function loadTaskState() {
+  if (typeof window === 'undefined') {
+    return { tasks: normalizeTasks(initialTasks), persistOnMount: false }
+  }
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY)
     if (saved !== null) {
       const parsed = JSON.parse(saved)
-      if (isValidTaskList(parsed)) return normalizeTasks(parsed)
+      return isValidTaskList(parsed)
+        ? { tasks: normalizeTasks(parsed), persistOnMount: true }
+        : { tasks: [], persistOnMount: false }
     } else {
       const legacySaved = window.localStorage.getItem(LEGACY_STORAGE_KEY)
       if (legacySaved !== null) {
         const legacyParsed = JSON.parse(legacySaved)
-        if (isValidTaskList(legacyParsed)) {
-          window.localStorage.removeItem(LEGACY_STORAGE_KEY)
-          return normalizeTasks(legacyParsed)
-        }
+        return isValidTaskList(legacyParsed)
+          ? { tasks: normalizeTasks(legacyParsed), persistOnMount: true }
+          : { tasks: [], persistOnMount: false }
       }
     }
   } catch {
-    // Corrupt or unavailable storage falls back to sample tasks.
+    return { tasks: [], persistOnMount: false }
   }
-  return normalizeTasks(initialTasks)
+  return { tasks: normalizeTasks(initialTasks), persistOnMount: true }
 }
 
 function taskReducer(tasks, action) {
@@ -141,7 +146,8 @@ function taskReducer(tasks, action) {
 }
 
 export function useTasks() {
-  const [tasks, dispatch] = useReducer(taskReducer, undefined, loadTasks)
+  const [initialTaskState] = useState(loadTaskState)
+  const [tasks, dispatch] = useReducer(taskReducer, initialTaskState.tasks)
   const [deletedTasks, setDeletedTasks] = useReducer(
     (state, action) => {
       switch (action.type) {
@@ -195,12 +201,13 @@ export function useTasks() {
   }, [activity])
 
   useEffect(() => {
+    if (!initialTaskState.persistOnMount && tasks === initialTaskState.tasks) return
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
     } catch {
       // The app remains usable when storage is unavailable.
     }
-  }, [tasks])
+  }, [initialTaskState.persistOnMount, initialTaskState.tasks, tasks])
 
   const addTask = useCallback(task => dispatch({ type: 'ADD_TASK', payload: task }), [])
   const updateTask = useCallback((id, changes) => {

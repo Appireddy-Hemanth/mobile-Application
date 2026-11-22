@@ -8,167 +8,130 @@ beforeEach(() => {
   window.history.pushState({}, '', '/')
 })
 
-describe('FocusBoard core tasks', () => {
-  it('creates a task with a unique title and updates totals', async () => {
-    const user = userEvent.setup()
+describe('FocusBoard dashboard', () => {
+  it('initializes six sample tasks and derives overview totals', async () => {
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Create Task' }))
-    await user.type(screen.getByLabelText('Title'), 'Audit test coverage')
-    await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
-
-    expect((await screen.findAllByText('Audit test coverage')).length).toBeGreaterThan(0)
-  }, 30000)
-
-  it('validates an empty task title', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-
-    await user.click(screen.getByRole('button', { name: 'Create Task' }))
-    await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
-
-    expect(await screen.findByRole('alert')).toHaveTextContent('Please enter a task title.')
+    expect(await within(document.querySelector('.task-list')).findByText('Design landing page')).toBeInTheDocument()
+    expect(screen.getByText('Fix mobile navigation')).toBeInTheDocument()
+    expect(screen.getByText('Review onboarding copy')).toBeInTheDocument()
+    expect(within(screen.getByRole('region', { name: 'Task overview' })).getByText('6')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(JSON.parse(window.localStorage.getItem('focusboard_tasks'))).toHaveLength(6)
+    })
   })
 
-  it('edits and deletes a task after confirmation', async () => {
+  it('creates a task and validates the required title', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Edit Refine customer dashboard' }))
-    const title = screen.getByLabelText('Title')
+    await user.click(screen.getByRole('button', { name: 'New task' }))
+    await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Please enter a task title.')
+
+    await user.type(screen.getByLabelText('Title *'), 'Audit test coverage')
+    await user.click(screen.getByRole('button', { name: 'Create task', exact: true }))
+    expect(await screen.findByText('Audit test coverage')).toBeInTheDocument()
+  })
+
+  it('edits a task and deletes it only after confirmation', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const row = within(document.querySelector('.task-list')).getByText('Design landing page').closest('article')
+    await user.click(row.querySelector('summary'))
+    await user.click(within(row).getByRole('button', { name: 'Edit task' }))
+    const title = screen.getByLabelText('Title *')
     await user.clear(title)
-    await user.type(title, 'Refine customer dashboard edited')
+    await user.type(title, 'Landing page refresh')
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    expect(await within(document.querySelector('.task-list')).findByText('Landing page refresh')).toBeInTheDocument()
 
-    expect((await screen.findAllByText('Refine customer dashboard edited')).length).toBeGreaterThan(0)
-
-    await user.click(screen.getByRole('button', { name: 'Delete Refine customer dashboard edited' }))
+    const editedRow = within(document.querySelector('.task-list')).getByText('Landing page refresh').closest('article')
+    await user.click(editedRow.querySelector('summary'))
+    await user.click(within(editedRow).getByRole('button', { name: 'Delete task' }))
     expect(screen.getByRole('alertdialog')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Move to deleted' }))
-
-    await waitFor(() =>
-      expect(screen.queryByText('Refine customer dashboard edited')).not.toBeInTheDocument(),
-    )
+    await waitFor(() => expect(within(document.querySelector('.task-list')).queryByText('Landing page refresh')).not.toBeInTheDocument())
   })
 
-  it('combines title search, status, and priority filters', async () => {
+  it('combines case-insensitive title search, status, and priority filters', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.type(screen.getAllByRole('textbox', { name: 'Search tasks' }).at(-1), 'API')
+    await user.type(screen.getByRole('searchbox', { name: 'Find a task' }), 'FIX MOBILE')
     await user.selectOptions(screen.getByRole('combobox', { name: 'Filter by priority' }), 'High')
-    await user.click(screen.getByRole('tab', { name: 'In progress' }))
+    await user.click(screen.getByRole('tab', { name: /To do/ }))
 
-    expect((await screen.findAllByText('Audit API error states')).length).toBeGreaterThan(0)
+    expect(screen.getByText('Fix mobile navigation')).toBeInTheDocument()
+    expect(within(document.querySelector('.task-list')).queryByText('Design landing page')).not.toBeInTheDocument()
   })
 
-  it('navigates all three Focus Notes slides', async () => {
+  it('cycles task status and updates calculated statistics', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const task = screen.getByText('Review onboarding copy').closest('article')
+    await user.click(within(task).getByRole('button', { name: /Current status To do/ }))
+    expect(within(task).getByText('In progress')).toBeInTheDocument()
+    await user.click(within(task).getByRole('button', { name: /Current status In progress/ }))
+    expect(within(task).getByRole('button', { name: /Current status Completed/ })).toBeInTheDocument()
+
+    const overview = screen.getByRole('region', { name: 'Task overview' })
+    expect(within(overview).getByText('3')).toBeInTheDocument()
+  })
+
+  it('supports all three focus-note slides and arrow-key navigation', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Next slide' }))
-    expect(await screen.findByText('A clear plan makes deep work easier.')).toBeInTheDocument()
+    const carousel = screen.getByRole('region', { name: 'Focus Notes carousel' })
+    expect(within(carousel).getByRole('heading', { name: 'Make today count.' })).toBeInTheDocument()
+    carousel.focus()
+    await user.keyboard('{ArrowRight}')
+    expect(within(carousel).getByRole('heading', { name: 'A clear plan makes deep work easier.' })).toBeInTheDocument()
+    await user.click(within(carousel).getByRole('button', { name: 'Next slide' }))
+    expect(within(carousel).getByRole('heading', { name: 'Small steps create meaningful momentum.' })).toBeInTheDocument()
+  })
 
-    await user.click(screen.getByRole('button', { name: 'Next slide' }))
-    expect(await screen.findByText('Small steps create meaningful momentum.')).toBeInTheDocument()
+  it('opens the modal with Escape and exposes Calendar and Settings placeholders', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByRole('button', { name: 'New task' }))
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Go to slide 1' }))
-    expect(await screen.findByText('Make progress on the things that matter.')).toBeInTheDocument()
+    await user.click(screen.getAllByRole('button', { name: 'Calendar' })[0])
+    expect(await screen.findByRole('heading', { name: 'Calendar' })).toBeInTheDocument()
+    await user.click(screen.getAllByRole('button', { name: 'Settings' })[0])
+    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeInTheDocument()
   })
 })
 
-describe('Routing', () => {
-  it('supports direct task route and Not Found fallback', async () => {
-    window.history.pushState({}, '', '/tasks')
-    const first = render(<App />)
-    expect(await screen.findByRole('heading', { name: 'My Tasks', level: 1 })).toBeInTheDocument()
-
-    first.unmount()
-    window.history.pushState({}, '', '/missing-page')
-    render(<App />)
-    expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
-  })
-
-  it('builds the weekly review from recorded tasks, focus sessions, and habit history', async () => {
-    const today = new Date()
-    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-    window.localStorage.setItem('focusboard_tasks', JSON.stringify([{
-      id: 'weekly-task',
-      title: 'Weekly task',
-      description: '',
-      category: 'Product',
-      status: 'Completed',
-      priority: 'Medium',
-      dueDate: todayKey,
-      updatedAt: todayKey,
-    }]))
-    window.localStorage.setItem('focusboard_focus_sessions_v1', JSON.stringify([{
-      id: 'weekly-focus',
-      completedAt: new Date().toISOString(),
-      minutes: 25,
-      type: 'deep-work',
-    }]))
-    window.localStorage.setItem('focusboard_habits_v1', JSON.stringify([{
-      id: 'weekly-habit',
-      frequency: 'Custom',
-      targetPerWeek: 3,
-      completedDates: [todayKey],
-    }]))
-    window.history.pushState({}, '', '/weekly-review')
-    render(<App />)
-
-    expect(await screen.findByRole('heading', { name: 'Weekly Productivity Review' })).toBeInTheDocument()
-    expect(within(screen.getByText('Completed tasks').closest('article')).getByText('1')).toBeInTheDocument()
-    expect(within(screen.getByText('Focus sessions').closest('article')).getByText('1')).toBeInTheDocument()
-    expect(within(screen.getByText('Focus time').closest('article')).getByText('25 min')).toBeInTheDocument()
-    expect(within(screen.getByText('Habit check-ins').closest('article')).getByText('1 / 3')).toBeInTheDocument()
-  })
-})
-
-describe('LocalStorage and dashboard', () => {
-  it('restores saved tasks instead of overwriting them', async () => {
+describe('Task persistence', () => {
+  it('restores saved tasks and does not replace a saved empty list', async () => {
     window.localStorage.setItem('focusboard_tasks', JSON.stringify([{
       id: 'saved-task',
       title: 'Saved task',
       description: 'Restored from storage',
-      category: 'Product',
+      category: 'Content',
       status: 'To do',
       priority: 'Low',
-      dueDate: '2026-12-01',
-      createdAt: '2026-11-22',
-      updatedAt: '2026-11-22',
-      recurrence: 'None',
+      dueDate: '',
     }]))
-    render(<App />)
+    const restored = render(<App />)
+    expect(await within(document.querySelector('.task-list')).findByText('Saved task')).toBeInTheDocument()
+    restored.unmount()
 
-    expect((await screen.findAllByText('Saved task')).length).toBeGreaterThan(0)
-  })
-
-  it('preserves a valid empty saved array', async () => {
     window.localStorage.setItem('focusboard_tasks', '[]')
     render(<App />)
-
     expect(await screen.findByText('No tasks found')).toBeInTheDocument()
   })
 
-  it('falls back safely for corrupted task JSON', async () => {
+  it('does not replace corrupt saved data with sample tasks on initial load', async () => {
     window.localStorage.setItem('focusboard_tasks', '{bad-json')
     render(<App />)
 
-    expect((await screen.findAllByText('Refine customer dashboard')).length).toBeGreaterThan(0)
-  })
-
-  it('shows total, in-progress, completed, and completion percentage', async () => {
-    window.localStorage.setItem('focusboard_tasks', JSON.stringify([
-      { id: '1', title: 'One', description: '', category: 'Product', status: 'To do', priority: 'Low', dueDate: '2026-12-01', createdAt: '2026-11-22', updatedAt: '2026-11-22' },
-      { id: '2', title: 'Two', description: '', category: 'Product', status: 'In progress', priority: 'High', dueDate: '2026-12-01', createdAt: '2026-11-22', updatedAt: '2026-11-22' },
-      { id: '3', title: 'Three', description: '', category: 'Product', status: 'Completed', priority: 'Medium', dueDate: '2026-12-01', createdAt: '2026-11-22', updatedAt: '2026-11-22' },
-    ]))
-    render(<App />)
-
-    const overview = screen.getByRole('region', { name: 'Task overview' })
-    expect(within(overview).getAllByText('3').length).toBeGreaterThan(0)
-    expect(within(overview).getAllByText('1').length).toBeGreaterThan(0)
-    expect(within(overview).getByText('33%')).toBeInTheDocument()
+    expect(await screen.findByText('No tasks found')).toBeInTheDocument()
+    expect(window.localStorage.getItem('focusboard_tasks')).toBe('{bad-json')
   })
 })

@@ -1,198 +1,63 @@
 # FocusBoard
 
-<div align="center">
+A responsive, single-user task dashboard for planning work, tracking progress, and keeping a small set of priorities in focus.
 
-**A polished, responsive productivity workspace for planning tasks, building habits, and protecting focused time.**
+**Live application:** [https://focusboard-dashboard-tan.vercel.app/](https://focusboard-dashboard-tan.vercel.app/)
+**Source code:** [Appireddy-Hemanth/mobile-Application](https://github.com/Appireddy-Hemanth/mobile-Application)
 
-[![CI](https://github.com/Appireddy-Hemanth/mobile-Application/actions/workflows/ci.yml/badge.svg)](https://github.com/Appireddy-Hemanth/mobile-Application/actions/workflows/ci.yml)
-[![React](https://img.shields.io/badge/React-19-087ea4?logo=react&logoColor=white)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white)](https://vite.dev/)
-[![License](https://img.shields.io/badge/license-not%20specified-lightgrey)](#license)
+## Features
 
-[Explore the Features](#-feature-set) • [View Screenshots](#-screenshots) • [Quick Start](#-quick-start) • [Architecture](#-architecture)
+- Six realistic sample tasks, loaded only when no saved task list exists
+- Create and edit tasks with title validation, description, category, status, priority, and optional due date
+- Delete tasks after confirmation
+- Cycle task status from **To do** to **In progress** to **Completed**
+- Combine case-insensitive title search, status tabs, and priority filtering
+- Derived total, in-progress, completed, pending-task, and completion-percentage values
+- Three-slide Focus Notes carousel with indicator, previous/next buttons, and arrow-key navigation
+- Browser persistence using `localStorage`; a valid saved empty list is preserved
+- Accessible labels, keyboard focus states, Escape-to-close dialogs, and responsive navigation
+- Calendar and Settings are intentionally scoped placeholder states, not additional assessment screens
 
-</div>
+## Responsive layout
 
----
+The interface adapts across the requested reference widths:
 
-## Overview
-
-**FocusBoard** is a frontend-only productivity application that brings task planning, project management, habit tracking, focus sessions, analytics, and weekly reviews into one cohesive workspace.
-
-It is designed to feel like a lightweight personal productivity suite:
-
-- Fast enough for everyday planning
-- Structured enough for larger workflows
-- Accessible on desktop, tablet, and mobile
-- Private by default because data stays in the browser
-
-> [!NOTE]
-> FocusBoard does not require a backend or account. The assistant is intentionally local and rule-based rather than connected to an external AI service.
-
----
-
-## Screenshots
-
-Captured from the live application at the assignment reference sizes.
-
-### Desktop experience — 1440 × 1000
-
-![FocusBoard desktop dashboard](./screenshots/desktop.png)
-
-### Mobile experience — 390 × 1128
-
-<div align="center">
-  <img src="./screenshots/mobile.png" alt="FocusBoard mobile dashboard" width="390">
-</div>
-
----
-
-## ✨ Feature Set
-
-| Area | Capabilities |
+| Width | Layout |
 |---|---|
-| **Tasks** | Create, edit, delete, complete, search, filter, sort, bulk-select, estimate time, track actual time, and organize subtasks |
-| **Planning** | Kanban board, monthly/weekly calendar, Eisenhower matrix, projects, goals, milestones, inbox, and workload view |
-| **Focus** | Configurable Pomodoro timer, deep-work mode, focus session history, and focus notes |
-| **Habits** | Daily, weekday, weekly, three-times-weekly, and custom goals with streaks and completion history |
-| **Productivity insights** | Completion metrics, weekly charts, priority distribution, overdue counts, recent activity, and weekly review |
-| **Engagement** | XP, levels, achievements, and duplicate-reward protection |
-| **Personalization** | Light and dark themes, configurable dashboard widgets, custom categories, and notification preferences |
-| **Data management** | Validated JSON import, CSV export, JSON export, recently deleted task restoration, and permanent trash deletion |
-| **Assistant** | Transparent local, rule-based productivity suggestions using task and habit data already in the browser |
+| **1440px desktop** | 240px workspace sidebar, breadcrumb header, three-column statistics, task table |
+| **768px tablet** | Compact icon sidebar, fluid dashboard cards and filters |
+| **390px mobile** | Compact top header, two-column statistics, stacked task cards, fixed bottom navigation |
 
-### Core task workflow
+The Create/Edit Task dialog also adapts to narrow viewports without horizontal scrolling.
 
-- Accessible task and confirmation dialogs
-- Status updates for **To do**, **In progress**, and **Completed**
-- Priority levels for **Low**, **Medium**, and **High**
-- Due dates and overdue highlighting
-- Dependencies and recurring task support
-- Project assignment and Eisenhower categorization
-- Safe browser persistence with validation and fallback behavior
+## Tech stack
 
----
+- React 19 and Vite 8
+- JavaScript with JSDoc
+- Tailwind CSS 4 tooling, with focused component styling in CSS
+- Lucide React icons
+- React Context and a `useReducer` task store
+- Vitest and Testing Library
 
-## Product Highlights
+## State and architecture
 
-### Dashboard
+`TaskProvider` exposes the task state through React Context. The `useTasks` hook initializes the reducer from the `focusboard_tasks` localStorage key and all task mutations return new arrays/objects rather than modifying existing state. The dashboard calculates its statistics and combined search/status/priority result list from that shared task state.
 
-The dashboard surfaces total tasks, active work, completed work, completion percentage, pending tasks, overdue tasks, weekly productivity, priority distribution, and recent activity at a glance.
-
-### Planning views
-
-- **Kanban:** Drag and drop work across To do, In progress, and Completed
-- **Calendar:** Navigate monthly and weekly schedules
-- **Eisenhower:** Separate work by urgency and importance
-- **Projects:** Assign and review tasks by project
-- **Inbox:** Capture ideas quickly and convert them into actionable tasks
-
-### Focus and consistency
-
-- Focus sessions feed directly into productivity and weekly-review views
-- Habits support flexible schedules and streak calculations
-- Mood and energy tracking provides a lightweight personal check-in experience
-- Weekly reviews combine task, focus, and habit activity
-
-### Data and privacy
-
-The application stores its data in browser `localStorage`. It does not send task information to a server or external AI provider. Clearing site data removes saved application state and restores sample data.
-
----
-
-## Tech Stack
-
-| Category | Technology |
-|---|---|
-| UI | React 19 |
-| Build | Vite 8 |
-| Language | JavaScript with JSDoc |
-| Routing | React Router |
-| Styling | CSS3 |
-| Icons | Lucide React |
-| State | React Context, `useReducer`, `useMemo`, custom hooks |
-| Persistence | Browser `localStorage` |
-| Testing | Vitest, Testing Library, Jest DOM |
-| Linting | Oxlint |
-| CI | GitHub Actions |
-
-No external state-management package or application backend is required.
-
----
-
-## Architecture
-
-`TaskContext` is the application’s central state boundary. It combines task operations, persisted preferences, derived statistics, gamification state, and common feature data for page components.
+When the key is absent, the six sample tasks initialize the workspace and are saved. Valid saved tasks—including an empty array—are restored on refresh rather than replaced. Invalid saved data is not silently replaced with samples on initial load. Task additions, edits, status changes, and confirmed deletions are persisted in the browser.
 
 ```text
 src/
-├── components/    Reusable dashboard, task, navigation, and dialog UI
-├── context/       TaskContext provider and context hooks
-├── data/          Initial tasks and Focus Notes content
-├── hooks/         State, persistence, task, and gamification hooks
-├── pages/         Route-level productivity views
-├── test/          Component and utility test suites
-├── types/         JSDoc task definitions
-└── utils/         Recurrence, habits, focus, assistant, and gamification logic
+├── components/     Task rows, task dialog, confirmation dialog, Focus Notes carousel
+├── context/        Task provider and context hook
+├── data/           Initial tasks and carousel copy
+├── hooks/          Reducer-backed task state and localStorage persistence
+├── pages/          Dashboard composition
+└── test/           Dashboard and utility tests
 ```
 
-### State flow
+## Getting started
 
-1. `useTasks` initializes from validated browser storage.
-2. Immutable reducer actions add, update, delete, bulk-delete, or complete tasks.
-3. Recurring tasks create a separate future occurrence when completed.
-4. `TaskContext` derives dashboard totals and filtered task collections.
-5. Persistence hooks synchronize supported state after successful updates.
-6. Route-level components consume the same state without separate stores.
-
-### Persistence
-
-The primary persisted task key is `focusboard_tasks`.
-
-- Valid saved arrays restore normally
-- An empty saved array remains a valid empty workspace
-- Corrupt or invalid data falls back to sample tasks
-- Duplicate task IDs are rejected
-- Required task fields and supported status/priority values are validated
-
-Other feature state uses purpose-specific localStorage keys for habits, focus sessions, trash, preferences, gamification, projects, and dashboard configuration.
-
----
-
-## Routes
-
-| Route | View |
-|---|---|
-| `/` | Dashboard |
-| `/tasks` | My Tasks |
-| `/projects` | Projects |
-| `/kanban` | Kanban |
-| `/calendar` | Calendar |
-| `/habits` | Habit Tracker |
-| `/focus` | Focus Timer |
-| `/assistant` | Productivity Assistant |
-| `/analytics` | Analytics |
-| `/achievements` | Achievements |
-| `/settings` | Settings |
-| `/notes` | Focus Notes |
-| `/eisenhower` | Eisenhower Matrix |
-| `/goals` | Goals |
-| `/inbox` | Quick Capture |
-| `/mood` | Mood and Energy |
-| `/deep-work` | Deep Work |
-| `/weekly-review` | Weekly Review |
-| `/workload` | Workload |
-
----
-
-## Quick Start
-
-### Requirements
-
-- Node.js 20.19+ or Node.js 22+
-- npm
-
-### Installation
+Requires Node.js 20.19+ or Node.js 22+ and npm.
 
 ```bash
 git clone https://github.com/Appireddy-Hemanth/mobile-Application.git
@@ -201,116 +66,35 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite, typically `http://localhost:5173`.
-
----
-
-## Available Scripts
-
-| Command | Purpose |
-|---|---|
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Create a production build in `dist/` |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run Oxlint |
-| `npm test` | Run the complete Vitest suite |
-| `npm run test:watch` | Start Vitest in watch mode |
-
----
-
-## Testing
-
-The test suite covers task creation and editing, validation, filtering, routing, localStorage restoration, recurrence, habits, gamification, focus-session records, and the dashboard.
+## Commands
 
 ```bash
-npm test
-npm run lint
-npm run build
+npm run dev      # start the Vite development server
+npm test         # run the Vitest suite
+npm run lint     # run Oxlint
+npm run build    # create the production bundle
+npm run preview  # preview the production bundle locally
 ```
 
-Vitest is configured for the jsdom environment with Testing Library and uses a single thread worker for reliable test startup.
+## Screenshots
 
----
+### Desktop — 1440 × 1000
 
-## Production Deployment
+![FocusBoard dashboard at desktop width](./screenshots/desktop.png)
 
-**Live application:** [https://focusboard-dashboard-tan.vercel.app/](https://focusboard-dashboard-tan.vercel.app/)
-
-Create a static production build:
-
-```bash
-npm run build
-```
-
-Deploy the generated `dist/` directory to a static host.
-
-Because FocusBoard uses React Router paths, configure your host to rewrite application routes such as `/tasks` and `/kanban` to `index.html`.
-The Vercel rewrite is configured in [`vercel.json`](./vercel.json). The deployed homepage and direct application routes have been checked.
-
-### Static host example
-
-For GitHub Pages or another static host:
-
-- Build from the repository root
-- Publish the `dist/` directory
-- Enable a fallback rewrite for `index.html`
-- Use HashRouter or configure SPA rewrites if the host does not support direct route fallback
-
----
-
-## Accessibility
-
-The interface includes:
-
-- Semantic route and section structure
-- Labeled inputs and controls
-- Dialog roles and modal labels
-- Escape-key dismissal for task dialogs
-- Focus restoration when dialogs close
-- Visible keyboard focus states
-- Screen-reader labels for icon-only actions
-- Responsive navigation and layouts
-
----
-
-## Scope and Limitations
-
-- FocusBoard is a browser-local application, not a multi-user backend service
-- Data is not synchronized across devices or browser profiles
-- The assistant uses deterministic local rules, not an external model
-- Notifications are generated from current frontend task and deadline state
-- Layout fidelity is based on the implemented interface rather than a supplied, verified Figma source
-- Clearing browser storage removes local application data
-
----
-
-## Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a focused feature branch
-3. Run lint, tests, and the production build
-4. Open a pull request with a concise summary and screenshots for visual changes
-
-Before submitting:
-
-```bash
-npm run lint
-npm test
-npm run build
-```
-
----
-
-## License
-
-No license has been specified in this repository. Add a `LICENSE` file if you intend to make the project available for open-source reuse.
-
----
+### Mobile — 390 × 1128
 
 <div align="center">
-
-Built with React, Vite, and a browser-first productivity approach.
-
+  <img src="./screenshots/mobile.png" alt="FocusBoard dashboard at mobile width" width="390">
 </div>
+
+## Scope and limitations
+
+- FocusBoard is frontend-only. Tasks are local to the current browser and are not synchronized across devices.
+- Calendar and Settings navigation display scope-aligned placeholders.
+- The Focus Notes carousel contains three curated slides; automatic rotation is not used.
+- Task data is stored in browser `localStorage`; clearing site data removes the saved workspace.
+
+## AI usage
+
+AI assistance disclosure and representative prompts are documented in [AI_USAGE.md](./AI_USAGE.md).
